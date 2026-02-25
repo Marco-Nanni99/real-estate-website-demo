@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services — Pastore Real Estate</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sand: #F5F0E8;
+    --deep: #1A2B3C;
+    --sea: #2D6A8F;
+    --sea-light: #4A8FB5;
+    --foam: #E8F4F8;
+    --gold: #C9A96E;
+    --text: #2A2A2A;
+    --muted: #8A8A8A;
+    --nav-h: 68px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--sand);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 4rem;
+    background: rgba(245,240,232,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(201,169,110,0.2);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; color: var(--deep);
+    letter-spacing: 0.01em; text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--deep);
+    font-size: 0.875rem; font-weight: 400; letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover,
+  .nav-links a.active { color: var(--sea); }
+  .nav-cta {
+    background: var(--deep); color: white !important;
+    padding: 0.55rem 1.4rem; border-radius: 100px;
+    font-size: 0.85rem !important;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--sea) !important; color: white !important; }
+
+  /* ── PAGE HERO ── */
+  .page-hero {
+    padding-top: var(--nav-h);
+    background: var(--deep);
+    text-align: center;
+    padding-bottom: 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 60% 0%, rgba(45,106,143,0.35) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .page-hero-inner {
+    position: relative; z-index: 1;
+    padding: 4.5rem 2rem 0;
+    max-width: 700px; margin: 0 auto;
+  }
+  .eyebrow {
+    font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1.25rem; display: block;
+  }
+  .page-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 4vw, 3.6rem);
+    line-height: 1.12; color: #fff;
+    margin-bottom: 1.25rem;
+  }
+  .page-hero h1 em { font-style: italic; color: var(--gold); }
+  .page-hero p {
+    font-size: 1.05rem; line-height: 1.75;
+    color: rgba(255,255,255,0.65); font-weight: 300;
+  }
+  .hero-pills {
+    display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;
+    margin-top: 2.5rem;
+  }
+  .hero-pill {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 100px; padding: 0.45rem 1.1rem;
+    font-size: 0.82rem; color: rgba(255,255,255,0.75);
+  }
+
+  /* ── SECTION SHARED ── */
+  .section { padding: 6rem 4rem; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-header { margin-bottom: 3.5rem; }
+  .section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3vw, 2.75rem);
+    line-height: 1.2; color: var(--deep);
+    margin-bottom: 1rem;
+  }
+  .section-header h2 em { font-style: italic; color: var(--sea); }
+  .section-header p {
+    font-size: 1.05rem; line-height: 1.75;
+    color: #555; font-weight: 300; max-width: 580px;
+  }
+
+  /* ── FOR OWNERS ── */
+  .owners-section { background: var(--sand); }
+
+  /* service cards grid */
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  .service-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 2rem 1.75rem;
+    border: 1.5px solid rgba(201,169,110,0.18);
+    transition: box-shadow 0.25s, transform 0.25s, border-color 0.25s;
+  }
+  .service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(26,43,60,0.1);
+    border-color: rgba(45,106,143,0.35);
+  }
+  .service-icon {
+    font-size: 2.2rem; margin-bottom: 1rem; display: block;
+    line-height: 1;
+  }
+  .service-card h3 {
+    font-size: 1.05rem; font-weight: 500;
+    color: var(--deep); margin-bottom: 0.6rem;
+  }
+  .service-card p {
+    font-size: 0.875rem; line-height: 1.65;
+    color: var(--muted); font-weight: 300;
+  }
+  .service-tags {
+    display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem;
+  }
+  .service-tag {
+    font-size: 0.72rem; font-weight: 500;
+    background: var(--foam); color: var(--sea);
+    padding: 0.25rem 0.7rem; border-radius: 100px;
+    letter-spacing: 0.02em;
+  }
+
+  /* 2-col bottom row: management extras */
+  .extras-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 3.5rem;
+  }
+  .extra-card {
+    background: var(--foam);
+    border-radius: 14px;
+    padding: 1.5rem 1.5rem;
+    display: flex; gap: 1rem; align-items: flex-start;
+  }
+  .extra-icon {
+    font-size: 1.6rem; flex-shrink: 0; margin-top: 0.1rem;
+  }
+  .extra-card h4 {
+    font-size: 0.9rem; font-weight: 500;
+    color: var(--deep); margin-bottom: 0.35rem;
+  }
+  .extra-card p {
+    font-size: 0.82rem; line-height: 1.6;
+    color: var(--muted); font-weight: 300;
+  }
+
+  /* owners CTA strip */
+  .owners-cta {
+    background: var(--deep);
+    border-radius: 20px;
+    padding: 3rem 3.5rem;
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .owners-cta-text h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; color: #fff;
+    margin-bottom: 0.5rem;
+  }
+  .owners-cta-text p {
+    font-size: 0.9rem; color: rgba(255,255,255,0.6);
+    font-weight: 300;
+  }
+  .cta-btns { display: flex; gap: 0.9rem; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--gold); color: var(--deep);
+    padding: 0.8rem 1.8rem; border-radius: 100px;
+    font-size: 0.875rem; font-weight: 500;
+    text-decoration: none; transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-ghost {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff; padding: 0.8rem 1.8rem;
+    border-radius: 100px; font-size: 0.875rem;
+    text-decoration: none; transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.18); }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,169,110,0.3), transparent);
+    margin: 0 4rem;
+  }
+
+  /* ── FOR RENTERS ── */
+  .renters-section { background: var(--sand); }
+  .renters-layout {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 5rem; align-items: center;
+  }
+
+  /* benefit list */
+  .benefit-list { display: flex; flex-direction: column; gap: 1.75rem; }
+  .benefit-item { display: flex; gap: 1.25rem; align-items: flex-start; }
+  .benefit-dot {
+    width: 44px; height: 44px; flex-shrink: 0;
+    background: var(--foam); border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+  }
+  .benefit-item h4 {
+    font-size: 0.975rem; font-weight: 500;
+    color: var(--deep); margin-bottom: 0.3rem;
+  }
+  .benefit-item p {
+    font-size: 0.875rem; line-height: 1.65;
+    color: var(--muted); font-weight: 300;
+  }
+
+  /* renters right panel */
+  .renters-right {
+    background: var(--deep);
+    border-radius: 24px;
+    padding: 3rem 2.5rem;
+    position: relative; overflow: hidden;
+  }
+  .renters-right::before {
+    content: '';
+    position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(45,106,143,0.35);
+  }
+  .renters-right-inner { position: relative; z-index: 1; }
+  .renters-right h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; color: #fff;
+    margin-bottom: 0.75rem; line-height: 1.25;
+  }
+  .renters-right h3 em { font-style: italic; color: var(--gold); }
+  .renters-right p {
+    font-size: 0.9rem; line-height: 1.7;
+    color: rgba(255,255,255,0.6); font-weight: 300;
+    margin-bottom: 2rem;
+  }
+  .renters-stat-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1rem; margin-bottom: 2.5rem;
+  }
+  .renters-stat {
+    background: rgba(255,255,255,0.07);
+    border-radius: 12px; padding: 1.1rem 1.2rem;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .renters-stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; color: var(--gold); display: block;
+    line-height: 1;
+  }
+  .renters-stat-label {
+    font-size: 0.78rem; color: rgba(255,255,255,0.5);
+    margin-top: 0.25rem; display: block;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .renters-right-btns { display: flex; flex-direction: column; gap: 0.75rem; }
+  .btn-sea {
+    background: var(--sea); color: #fff;
+    padding: 0.85rem 1.8rem; border-radius: 100px;
+    font-size: 0.875rem; font-weight: 500;
+    text-decoration: none; text-align: center;
+    transition: background 0.2s;
+  }
+  .btn-sea:hover { background: var(--sea-light); }
+  .btn-outline-white {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.8);
+    padding: 0.85rem 1.8rem; border-radius: 100px;
+    font-size: 0.875rem; font-weight: 400;
+    text-decoration: none; text-align: center;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-outline-white:hover {
+    border-color: rgba(255,255,255,0.5);
+    color: #fff;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--deep); color: rgba(255,255,255,0.6);
+    padding: 4rem 4rem 2.5rem;
+    font-size: 0.875rem;
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem; margin-bottom: 3rem;
+  }
+  .footer-brand .nav-logo {
+    font-size: 1.3rem; color: #fff; display: inline-block; margin-bottom: 1rem;
+  }
+  .footer-brand p { line-height: 1.7; font-weight: 300; max-width: 240px; }
+  .footer-col h4 {
+    font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: rgba(255,255,255,0.4); margin-bottom: 1.25rem;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 0.7rem; }
+  .footer-col a {
+    text-decoration: none; color: rgba(255,255,255,0.6);
+    transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--gold); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 2rem; }
+    .section { padding: 4rem 2rem; }
+    .services-grid { grid-template-columns: 1fr 1fr; }
+    .extras-grid { grid-template-columns: 1fr 1fr; }
+    .renters-layout { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .section-divider { margin: 0 2rem; }
+    .owners-cta { flex-direction: column; align-items: flex-start; }
+  }
+  @media (max-width: 600px) {
+    .services-grid { grid-template-columns: 1fr; }
+    .extras-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .renters-stat-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <a href="website.html" class="nav-logo">Pastore<span> Real Estate</span></a>
+  <ul class="nav-links">
+    <li><a href="rentals.html">Rentals</a></li>
+    <li><a href="owners.html">For Owners</a></li>
+    <li><a href="services.html" class="active">Services</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html" class="nav-cta">Get in Touch</a></li>
+  </ul>
+</nav>
+
+<!-- ══ PAGE HERO ══ -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <span class="eyebrow">What we do</span>
+    <h1>Everything your property<br><em>needs to thrive.</em></h1>
+    <p>Whether you own a villa in Forte dei Marmi or you're planning your next Tuscan escape, we cover every detail — so you don't have to.</p>
+    <div class="hero-pills">
+      <span class="hero-pill">Year-round property care</span>
+      <span class="hero-pill">Curated holiday rentals</span>
+      <span class="hero-pill">24/7 guest support</span>
+      <span class="hero-pill">Transparent reporting</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FOR OWNERS ══ -->
+<section class="section owners-section" id="owners">
+  <div class="section-inner">
+
+    <div class="section-header">
+      <span class="eyebrow">For Property Owners</span>
+      <h2>We take care of your home,<br><em>all year round.</em></h2>
+      <p>From garden maintenance to full interior upkeep, our team handles every aspect of your property so it stays in perfect condition — whether it's occupied or not.</p>
+    </div>
+
+    <!-- Service category cards -->
+    <div class="services-grid">
+
+      <div class="service-card">
+        <span class="service-icon">🌿</span>
+        <h3>Garden &amp; Outdoor</h3>
+        <p>We keep your outdoor spaces pristine throughout the year with regular maintenance, seasonal preparation, and bespoke landscaping care.</p>
+        <div class="service-tags">
+          <span class="service-tag">Lawn mowing</span>
+          <span class="service-tag">Hedge trimming</span>
+          <span class="service-tag">Pool cleaning</span>
+          <span class="service-tag">Irrigation</span>
+          <span class="service-tag">Seasonal clean</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <span class="service-icon">🔧</span>
+        <h3>Plumbing &amp; Hydraulics</h3>
+        <p>Preventive inspections and rapid response for any water-related issue — from routine checks to emergency repairs, we have you covered.</p>
+        <div class="service-tags">
+          <span class="service-tag">Pipe inspection</span>
+          <span class="service-tag">Leak repair</span>
+          <span class="service-tag">Drain unblocking</span>
+          <span class="service-tag">Boiler service</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <span class="service-icon">🐛</span>
+        <h3>Pest &amp; Hygiene</h3>
+        <p>Thorough treatments to keep your property clean, healthy, and free of pests — essential for properties that stand empty during winter months.</p>
+        <div class="service-tags">
+          <span class="service-tag">Disinfestation</span>
+          <span class="service-tag">Mosquito treatment</span>
+          <span class="service-tag">Rodent control</span>
+          <span class="service-tag">Deep cleaning</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <span class="service-icon">🎨</span>
+        <h3>Interior &amp; Design</h3>
+        <p>Refresh and repair interiors with precision — from touch-up painting to full furniture restoration and expert design consultations.</p>
+        <div class="service-tags">
+          <span class="service-tag">Painting</span>
+          <span class="service-tag">Furniture repair</span>
+          <span class="service-tag">Flooring</span>
+          <span class="service-tag">Design consult</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <span class="service-icon">🏠</span>
+        <h3>General Maintenance</h3>
+        <p>Electrical, air conditioning, locks, appliances — our trusted technicians handle all general repairs, including pre- and post-season inspections.</p>
+        <div class="service-tags">
+          <span class="service-tag">Electrical</span>
+          <span class="service-tag">AC &amp; heating</span>
+          <span class="service-tag">Locks &amp; security</span>
+          <span class="service-tag">Appliances</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <span class="service-icon">🛎️</span>
+        <h3>Concierge &amp; Turnovers</h3>
+        <p>Key holding, guest check-in assistance, linen changes, and property walkthroughs between stays — seamless transitions every time.</p>
+        <div class="service-tags">
+          <span class="service-tag">Key holding</span>
+          <span class="service-tag">Check-in</span>
+          <span class="service-tag">Linen service</span>
+          <span class="service-tag">Inspections</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Extras: management-level services -->
+    <div class="extras-grid">
+      <div class="extra-card">
+        <span class="extra-icon">📅</span>
+        <div>
+          <h4>Rental Management</h4>
+          <p>We handle listings, guest communication, pricing strategy, and calendar management — maximising your occupancy and revenue year-round.</p>
+        </div>
+      </div>
+      <div class="extra-card">
+        <span class="extra-icon">📊</span>
+        <div>
+          <h4>Owner Dashboard</h4>
+          <p>Track revenue, occupancy rates, upcoming bookings, and submit maintenance requests — all from your personal online portal, anytime.</p>
+        </div>
+      </div>
+      <div class="extra-card">
+        <span class="extra-icon">📸</span>
+        <div>
+          <h4>Photography &amp; Listing</h4>
+          <p>Professional photography and copywriting to present your property at its best and attract quality guests from day one.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Owners CTA -->
+    <div class="owners-cta">
+      <div class="owners-cta-text">
+        <h3>Ready to hand over the keys?</h3>
+        <p>Tell us about your property and we'll take it from there. No long contracts, no stress.</p>
+      </div>
+      <div class="cta-btns">
+        <a href="register.html" class="btn-primary">List my property</a>
+        <a href="owners.html" class="btn-ghost">Log in to owner portal</a>
+        <a href="contact.html" class="btn-ghost">Get in touch</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- divider -->
+<div class="section-divider"></div>
+
+<!-- ══ FOR RENTERS ══ -->
+<section class="section renters-section" id="renters">
+  <div class="section-inner">
+
+    <div class="section-header">
+      <span class="eyebrow">For Renters</span>
+      <h2>Your perfect Tuscan escape,<br><em>taken care of.</em></h2>
+      <p>We handpick every property in our collection — and we stay with you from the moment you book to the moment you leave.</p>
+    </div>
+
+    <div class="renters-layout">
+
+      <!-- Left: benefits -->
+      <div class="benefit-list">
+
+        <div class="benefit-item">
+          <div class="benefit-dot">🏠</div>
+          <div>
+            <h4>Curated properties</h4>
+            <p>Every villa and apartment in our collection is personally vetted and maintained to our standards — no surprises on arrival.</p>
+          </div>
+        </div>
+
+        <div class="benefit-item">
+          <div class="benefit-dot">🕐</div>
+          <div>
+            <h4>24/7 guest support</h4>
+            <p>We're available around the clock during your stay. Whether it's a question about the property or an urgent issue, we pick up.</p>
+          </div>
+        </div>
+
+        <div class="benefit-item">
+          <div class="benefit-dot">🌟</div>
+          <div>
+            <h4>Verified quality</h4>
+            <p>Our properties are regularly inspected and maintained. What you see in the listing is exactly what you'll find when you arrive.</p>
+          </div>
+        </div>
+
+        <div class="benefit-item">
+          <div class="benefit-dot">🗓️</div>
+          <div>
+            <h4>Flexible stays</h4>
+            <p>From a long weekend to an entire summer season — we accommodate short and extended stays, with flexible check-in arrangements.</p>
+          </div>
+        </div>
+
+        <div class="benefit-item">
+          <div class="benefit-dot">📍</div>
+          <div>
+            <h4>Prime locations</h4>
+            <p>Our properties are in and around Forte dei Marmi — one of the most exclusive stretches of the Tuscan Riviera, steps from the beach.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: dark panel -->
+      <div class="renters-right">
+        <div class="renters-right-inner">
+          <h3>Forte dei Marmi,<br><em>as it should be.</em></h3>
+          <p>A curated collection of handpicked villas and apartments on the Tuscan Riviera — managed with care, so your holiday is effortless from start to finish.</p>
+
+          <div class="renters-stat-row">
+            <div class="renters-stat">
+              <span class="renters-stat-num">30+</span>
+              <span class="renters-stat-label">Properties</span>
+            </div>
+            <div class="renters-stat">
+              <span class="renters-stat-num">24/7</span>
+              <span class="renters-stat-label">Guest support</span>
+            </div>
+            <div class="renters-stat">
+              <span class="renters-stat-num">4.9★</span>
+              <span class="renters-stat-label">Avg. guest rating</span>
+            </div>
+            <div class="renters-stat">
+              <span class="renters-stat-num">10+</span>
+              <span class="renters-stat-label">Years in Forte</span>
+            </div>
+          </div>
+
+          <div class="renters-right-btns">
+            <a href="rentals.html" class="btn-sea">Browse properties</a>
+            <a href="contact.html" class="btn-outline-white">Get in touch</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="website.html" class="nav-logo">Pastore<span style="color:var(--gold)"> Real Estate</span></a>
+      <p>Boutique property management and holiday rentals on the Tuscan Riviera, Forte dei Marmi.</p>
+    </div>
+    <div class="footer-col">
+      <h4>For Renters</h4>
+      <ul>
+        <li><a href="rentals.html">Browse all properties</a></li>
+        <li><a href="rentals.html">Sea view apartments</a></li>
+        <li><a href="rentals.html">Villas with pools</a></li>
+        <li><a href="rentals.html">Pet-friendly homes</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>For Owners</h4>
+      <ul>
+        <li><a href="register.html">List your property</a></li>
+        <li><a href="services.html#owners">Year-round care</a></li>
+        <li><a href="owners.html">Owner dashboard</a></li>
+        <li><a href="services.html#owners">Our services</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="#">info@pastore.it</a></li>
+        <li><a href="#">+39 0584 000 000</a></li>
+        <li><a href="#">Forte dei Marmi, LU</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">WhatsApp us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Pastore Real Estate. All rights reserved.</span>
+    <span style="color:rgba(255,255,255,0.3)">Forte dei Marmi, Tuscany</span>
+  </div>
+</footer>
+
+</body>
+</html>

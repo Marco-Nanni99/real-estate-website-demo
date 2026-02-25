@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Owner Portal — Pastore Real Estate</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --sand: #F5F0E8; --deep: #1A2B3C; --sea: #2D6A8F;
+    --sea-light: #4A8FB5; --foam: #E8F4F8; --gold: #C9A96E;
+    --text: #2A2A2A; --muted: #8A8A8A;
+    --sidebar: 240px;
+    --green: #4CAF50; --amber: #F59E0B; --red: #EF4444;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #F0EBE1;
+    color: var(--text);
+    display: flex; min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar); flex-shrink: 0;
+    background: var(--deep);
+    display: flex; flex-direction: column;
+    position: fixed; top: 0; left: 0; bottom: 0;
+    z-index: 50; overflow-y: auto;
+  }
+  .sidebar-logo {
+    padding: 1.75rem 1.5rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .sidebar-logo a {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem; color: white; text-decoration: none;
+  }
+  .sidebar-logo a span { color: var(--gold); }
+  .sidebar-label {
+    font-size: 0.62rem; font-weight: 500; letter-spacing: 0.18em;
+    text-transform: uppercase; color: rgba(255,255,255,0.35);
+    padding: 1.25rem 1.5rem 0.5rem;
+  }
+  .sidebar-nav { list-style: none; padding: 0 0.75rem; }
+  .sidebar-nav li { margin-bottom: 2px; }
+  .sidebar-nav a {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.65rem 0.85rem; border-radius: 10px;
+    text-decoration: none; font-size: 0.875rem; font-weight: 400;
+    color: rgba(255,255,255,0.6);
+    transition: background 0.15s, color 0.15s;
+  }
+  .sidebar-nav a:hover { background: rgba(255,255,255,0.07); color: white; }
+  .sidebar-nav a.active { background: rgba(255,255,255,0.1); color: white; }
+  .sidebar-nav .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+  .sidebar-badge {
+    margin-left: auto; background: var(--gold); color: var(--deep);
+    border-radius: 100px; padding: 0.1rem 0.5rem;
+    font-size: 0.68rem; font-weight: 600;
+  }
+  .sidebar-owner {
+    margin-top: auto;
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .owner-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--sea); display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; color: white; font-weight: 500; flex-shrink: 0;
+  }
+  .owner-info { overflow: hidden; }
+  .owner-name { font-size: 0.82rem; color: white; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .owner-role { font-size: 0.7rem; color: rgba(255,255,255,0.4); }
+  .logout-btn {
+    margin-left: auto; background: none; border: none; cursor: pointer;
+    color: rgba(255,255,255,0.35); font-size: 1rem;
+    transition: color 0.15s; flex-shrink: 0;
+    padding: 0.25rem;
+  }
+  .logout-btn:hover { color: white; }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: var(--sidebar); flex: 1;
+    padding: 2.5rem 2.5rem 4rem;
+    min-width: 0;
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-top {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;
+  }
+  .page-greeting { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.2rem; }
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem; color: var(--deep);
+  }
+  .page-title em { font-style: italic; color: var(--sea); }
+  .page-date { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+  .btn-new-request {
+    display: flex; align-items: center; gap: 0.45rem;
+    background: var(--deep); color: white;
+    border: none; border-radius: 100px;
+    padding: 0.65rem 1.4rem;
+    font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500;
+    cursor: pointer; transition: background 0.2s;
+    text-decoration: none;
+  }
+  .btn-new-request:hover { background: var(--sea); }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .stat-card {
+    background: white; border-radius: 16px;
+    padding: 1.25rem 1.4rem;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+  }
+  .stat-card-label {
+    font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem;
+  }
+  .stat-card-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; color: var(--deep); display: flex; align-items: baseline; gap: 0.3rem;
+  }
+  .stat-card-value small { font-family: 'DM Sans', sans-serif; font-size: 0.78rem; color: var(--muted); font-weight: 300; }
+  .stat-card-change {
+    display: inline-flex; align-items: center; gap: 0.2rem;
+    font-size: 0.72rem; font-weight: 500; margin-top: 0.4rem;
+    padding: 0.15rem 0.5rem; border-radius: 100px;
+  }
+  .stat-card-change.up { background: rgba(76,175,80,0.12); color: #2E7D32; }
+  .stat-card-change.neutral { background: rgba(245,158,11,0.12); color: #92400E; }
+
+  /* ── SECTION TITLE ── */
+  .section-label {
+    font-size: 0.72rem; font-weight: 500; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem;
+  }
+  .section-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem; color: var(--deep); margin-bottom: 1.25rem;
+  }
+
+  /* ── PROPERTY CARDS ── */
+  .properties-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+  .prop-card {
+    background: white; border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+    transition: box-shadow 0.2s;
+  }
+  .prop-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.1); }
+  .prop-card-img {
+    height: 140px; overflow: hidden; position: relative;
+  }
+  .prop-card-img svg { width: 100%; height: 100%; display: block; }
+  .prop-status {
+    position: absolute; top: 0.75rem; left: 0.75rem;
+    border-radius: 100px; padding: 0.25rem 0.7rem;
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em;
+    display: flex; align-items: center; gap: 0.35rem;
+  }
+  .prop-status .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .prop-status.occupied { background: rgba(76,175,80,0.15); color: #2E7D32; }
+  .prop-status.occupied .dot { background: var(--green); }
+  .prop-status.available { background: rgba(45,106,143,0.12); color: var(--sea); }
+  .prop-status.available .dot { background: var(--sea); }
+  .prop-status.maintenance { background: rgba(245,158,11,0.15); color: #92400E; }
+  .prop-status.maintenance .dot { background: var(--amber); }
+
+  .prop-card-body { padding: 1.1rem 1.25rem 1.3rem; }
+  .prop-card-location { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.2rem; }
+  .prop-card-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--deep); margin-bottom: 0.9rem; }
+  .prop-card-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem; margin-bottom: 1rem;
+  }
+  .prop-stat {
+    background: var(--sand); border-radius: 10px;
+    padding: 0.55rem 0.6rem; text-align: center;
+  }
+  .prop-stat-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem; color: var(--deep); display: block;
+  }
+  .prop-stat-label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .prop-card-footer {
+    display: flex; gap: 0.5rem;
+  }
+  .prop-btn {
+    flex: 1; padding: 0.5rem;
+    border-radius: 8px; border: 1.5px solid #E0DAD0;
+    background: white; font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem; color: var(--deep); font-weight: 500;
+    cursor: pointer; transition: all 0.15s; text-align: center;
+  }
+  .prop-btn:hover { border-color: var(--deep); background: var(--deep); color: white; }
+  .prop-btn.primary { background: var(--deep); color: white; border-color: var(--deep); }
+  .prop-btn.primary:hover { background: var(--sea); border-color: var(--sea); }
+
+  /* ── MAINTENANCE SECTION ── */
+  .maintenance-wrap {
+    background: white; border-radius: 20px;
+    padding: 1.75rem 2rem;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+  }
+  .category-tabs {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+    margin-bottom: 1.5rem; padding-bottom: 1.25rem;
+    border-bottom: 1px solid #F0EDE8;
+  }
+  .cat-tab {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.5rem 1rem; border-radius: 100px;
+    border: 1.5px solid #E0DAD0;
+    background: white; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 500; color: var(--muted);
+    transition: all 0.15s;
+  }
+  .cat-tab:hover { border-color: var(--deep); color: var(--deep); }
+  .cat-tab.active { background: var(--deep); color: white; border-color: var(--deep); }
+  .cat-tab .cat-icon { font-size: 1rem; }
+
+  .services-panel { display: none; }
+  .services-panel.active { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.85rem; }
+
+  .service-btn {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0.65rem; padding: 1.25rem 0.75rem;
+    border-radius: 14px; border: 1.5px solid #E8E4DC;
+    background: var(--sand); cursor: pointer;
+    transition: all 0.18s; text-align: center;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .service-btn:hover {
+    border-color: var(--sea); background: var(--foam);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(45,106,143,0.12);
+  }
+  .service-btn-icon { font-size: 2rem; line-height: 1; }
+  .service-btn-label { font-size: 0.8rem; font-weight: 500; color: var(--deep); line-height: 1.3; }
+  .service-btn-desc { font-size: 0.7rem; color: var(--muted); font-weight: 300; line-height: 1.3; }
+
+  /* ── RECENT REQUESTS ── */
+  .requests-list { display: flex; flex-direction: column; gap: 0.6rem; }
+  .request-item {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.9rem 1.1rem; border-radius: 12px;
+    background: var(--sand); transition: background 0.15s;
+  }
+  .request-item:hover { background: #EBE6DC; }
+  .request-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+  }
+  .request-icon.garden { background: rgba(76,175,80,0.12); }
+  .request-icon.plumbing { background: rgba(45,106,143,0.1); }
+  .request-icon.pest { background: rgba(245,158,11,0.1); }
+  .request-icon.interior { background: rgba(201,169,110,0.15); }
+  .request-info { flex: 1; min-width: 0; }
+  .request-title { font-size: 0.875rem; font-weight: 500; color: var(--deep); }
+  .request-meta { font-size: 0.75rem; color: var(--muted); margin-top: 0.1rem; }
+  .request-status {
+    border-radius: 100px; padding: 0.2rem 0.65rem;
+    font-size: 0.68rem; font-weight: 600; flex-shrink: 0;
+  }
+  .request-status.done { background: rgba(76,175,80,0.12); color: #2E7D32; }
+  .request-status.pending { background: rgba(245,158,11,0.12); color: #92400E; }
+  .request-status.progress { background: rgba(45,106,143,0.1); color: var(--sea); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(26,43,60,0.5); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white; border-radius: 22px;
+    width: 90%; max-width: 520px;
+    padding: 2rem 2.25rem;
+    position: relative;
+    animation: modalIn 0.22s ease both;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to   { opacity: 1; transform: none; }
+  }
+  .modal-close {
+    position: absolute; top: 1rem; right: 1rem;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--sand); border: none; cursor: pointer;
+    font-size: 1rem; display: flex; align-items: center; justify-content: center;
+    color: var(--deep); transition: background 0.15s;
+  }
+  .modal-close:hover { background: #E0DAD0; }
+  .modal-icon { font-size: 2.2rem; margin-bottom: 0.75rem; }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem; color: var(--deep); margin-bottom: 0.3rem;
+  }
+  .modal-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem; }
+  .modal-field { margin-bottom: 1rem; }
+  .modal-field label { display: block; font-size: 0.82rem; font-weight: 500; color: var(--deep); margin-bottom: 0.4rem; }
+  .modal-input {
+    width: 100%; border: 1.5px solid #E0DAD0; border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--text);
+    background: var(--sand); outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .modal-input:focus { border-color: var(--sea); background: white; box-shadow: 0 0 0 3px rgba(45,106,143,0.1); }
+  textarea.modal-input { resize: vertical; min-height: 90px; }
+  select.modal-input { cursor: pointer;
+    background: var(--sand) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238A8A8A'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+    appearance: none;
+  }
+  .urgency-row { display: flex; gap: 0.5rem; }
+  .urgency-opt {
+    flex: 1; padding: 0.5rem; border-radius: 8px;
+    border: 1.5px solid #E0DAD0; background: white;
+    font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 500;
+    cursor: pointer; text-align: center; transition: all 0.15s; color: var(--muted);
+  }
+  .urgency-opt.selected.low { border-color: var(--green); background: rgba(76,175,80,0.08); color: #2E7D32; }
+  .urgency-opt.selected.medium { border-color: var(--amber); background: rgba(245,158,11,0.08); color: #92400E; }
+  .urgency-opt.selected.high { border-color: var(--red); background: rgba(239,68,68,0.08); color: #991B1B; }
+  .urgency-opt:hover { border-color: var(--deep); color: var(--deep); }
+  .modal-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
+  .btn-cancel {
+    flex: 1; padding: 0.75rem; border-radius: 10px;
+    border: 1.5px solid #E0DAD0; background: white;
+    font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500;
+    cursor: pointer; color: var(--deep); transition: all 0.15s;
+  }
+  .btn-cancel:hover { border-color: var(--deep); }
+  .btn-submit-req {
+    flex: 2; padding: 0.75rem; border-radius: 10px;
+    border: none; background: var(--deep); color: white;
+    font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .btn-submit-req:hover { background: var(--sea); }
+
+  /* ── SUCCESS TOAST ── */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 300;
+    background: var(--deep); color: white;
+    padding: 0.85rem 1.4rem; border-radius: 12px;
+    display: flex; align-items: center; gap: 0.6rem;
+    font-size: 0.875rem; font-weight: 400;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── GRID HELPERS ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .col-right { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .card-shell {
+    background: white; border-radius: 18px;
+    padding: 1.5rem 1.75rem;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+  }
+  .card-shell-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem; color: var(--deep); margin-bottom: 1.1rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-shell-title a { font-family: 'DM Sans', sans-serif; font-size: 0.78rem; color: var(--sea); text-decoration: none; font-weight: 400; }
+  .card-shell-title a:hover { color: var(--deep); }
+
+  /* Mini revenue chart bars */
+  .rev-chart { display: flex; align-items: flex-end; gap: 5px; height: 60px; margin-bottom: 0.5rem; }
+  .rev-bar { flex: 1; border-radius: 4px 4px 0 0; background: rgba(45,106,143,0.2); transition: background 0.15s; cursor: pointer; }
+  .rev-bar:hover { background: var(--sea-light); }
+  .rev-bar.current { background: var(--sea); }
+  .rev-labels { display: flex; gap: 5px; }
+  .rev-label { flex: 1; text-align: center; font-size: 0.6rem; color: var(--muted); }
+
+  /* Next bookings */
+  .booking-item {
+    display: flex; align-items: center; gap: 0.85rem;
+    padding: 0.75rem 0; border-bottom: 1px solid #F0EDE8;
+  }
+  .booking-item:last-child { border-bottom: none; }
+  .booking-date {
+    background: var(--deep); color: white; border-radius: 10px;
+    padding: 0.4rem 0.6rem; text-align: center; flex-shrink: 0;
+  }
+  .booking-date-day { font-family: 'Playfair Display', serif; font-size: 1.1rem; line-height: 1; }
+  .booking-date-mon { font-size: 0.6rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7; }
+  .booking-info { flex: 1; min-width: 0; }
+  .booking-name { font-size: 0.85rem; font-weight: 500; color: var(--deep); }
+  .booking-meta { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+  .booking-nights {
+    font-size: 0.78rem; color: var(--sea); font-weight: 500; flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a href="website.html">Pastore<span> Real Estate</span></a>
+  </div>
+
+  <p class="sidebar-label">Owner Portal</p>
+  <ul class="sidebar-nav">
+    <li><a href="#overview" class="active"><span class="nav-icon">📊</span> Overview</a></li>
+    <li><a href="#properties"><span class="nav-icon">🏡</span> My Properties</a></li>
+    <li><a href="#maintenance"><span class="nav-icon">🔧</span> Maintenance <span class="sidebar-badge">2</span></a></li>
+    <li><a href="#history"><span class="nav-icon">📋</span> Request History</a></li>
+  </ul>
+
+  <p class="sidebar-label">Account</p>
+  <ul class="sidebar-nav">
+    <li><a href="#"><span class="nav-icon">👤</span> My Profile</a></li>
+    <li><a href="#"><span class="nav-icon">💶</span> Statements</a></li>
+    <li><a href="#"><span class="nav-icon">⚙️</span> Settings</a></li>
+  </ul>
+
+  <div class="sidebar-owner">
+    <div class="owner-avatar">MR</div>
+    <div class="owner-info">
+      <div class="owner-name">Maria Rossi</div>
+      <div class="owner-role">Property owner</div>
+    </div>
+    <button class="logout-btn" title="Sign out" onclick="window.location='owners.html'">⎋</button>
+  </div>
+</aside>
+
+<!-- ── MAIN CONTENT ── -->
+<main class="main">
+
+  <!-- Page header -->
+  <div class="page-top" id="overview">
+    <div>
+      <p class="page-greeting">Good morning,</p>
+      <h1 class="page-title">Maria <em>Rossi</em></h1>
+      <p class="page-date" id="pageDate"></p>
+    </div>
+    <button class="btn-new-request" onclick="openModal('General maintenance','🔧','General')">
+      + New request
+    </button>
+  </div>
+
+  <!-- Stats row -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-card-label">Revenue 2025</div>
+      <div class="stat-card-value">€16,800 <small>ytd</small></div>
+      <span class="stat-card-change up">↑ 18% vs 2024</span>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Occupancy rate</div>
+      <div class="stat-card-value">73 <small>%</small></div>
+      <span class="stat-card-change up">↑ 5 pts vs last yr</span>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Active bookings</div>
+      <div class="stat-card-value">3 <small>this season</small></div>
+      <span class="stat-card-change neutral">Next: Jun 28</span>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Open requests</div>
+      <div class="stat-card-value">2 <small>pending</small></div>
+      <span class="stat-card-change neutral">1 in progress</span>
+    </div>
+  </div>
+
+  <!-- Properties + Revenue/Bookings side-by-side -->
+  <div class="two-col" style="margin-bottom:2rem">
+    <div>
+      <p class="section-label">My portfolio</p>
+      <p class="section-heading" id="properties">My Properties</p>
+      <div class="properties-grid" style="grid-template-columns:1fr;">
+
+        <!-- Property 1 -->
+        <div class="prop-card">
+          <div class="prop-card-img">
+            <svg viewBox="0 0 500 140" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ph1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#D4E8F0"/><stop offset="100%" stop-color="#A8C8DF"/></linearGradient></defs><rect width="500" height="140" fill="url(#ph1)"/><rect x="100" y="40" width="300" height="80" fill="#F5E6C8" rx="2"/><polygon points="90,42 250,5 410,42" fill="#C47050"/><rect x="140" y="60" width="35" height="32" fill="#7AABCC" rx="1"/><rect x="232" y="60" width="35" height="32" fill="#7AABCC" rx="1"/><rect x="325" y="60" width="35" height="32" fill="#7AABCC" rx="1"/><rect x="215" y="92" width="70" height="28" fill="#9B6B3A" rx="2"/><ellipse cx="70" cy="110" rx="50" ry="40" fill="#5A8A4A" opacity="0.8"/><ellipse cx="430" cy="108" rx="45" ry="38" fill="#4A7A3A" opacity="0.8"/></svg>
+            <span class="prop-status occupied"><span class="dot"></span> Occupied</span>
+          </div>
+          <div class="prop-card-body">
+            <p class="prop-card-location">Centro · Forte dei Marmi</p>
+            <p class="prop-card-name">Villa delle Mimose</p>
+            <div class="prop-card-stats">
+              <div class="prop-stat"><span class="prop-stat-val">€2,400</span><span class="prop-stat-label">/ week</span></div>
+              <div class="prop-stat"><span class="prop-stat-val">73%</span><span class="prop-stat-label">Occupancy</span></div>
+              <div class="prop-stat"><span class="prop-stat-val">€14.2k</span><span class="prop-stat-label">2024 rev.</span></div>
+            </div>
+            <div class="prop-card-footer">
+              <button class="prop-btn" onclick="openModal('Villa delle Mimose','🏡','General')">Request service</button>
+              <button class="prop-btn primary">View details</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Property 2 -->
+        <div class="prop-card">
+          <div class="prop-card-img">
+            <svg viewBox="0 0 500 140" xmlns="http://www.w3.org/2000/svg"><rect width="500" height="140" fill="#E8D5B8"/><rect y="108" width="500" height="32" fill="#B8D0D8"/><rect x="120" y="28" width="260" height="90" fill="#EADCC0" rx="2"/><rect x="120" y="28" width="260" height="22" fill="#D4956A"/><rect x="148" y="58" width="52" height="44" fill="#8ABCCF" rx="1" opacity="0.85"/><rect x="224" y="58" width="52" height="44" fill="#8ABCCF" rx="1" opacity="0.85"/><rect x="300" y="58" width="52" height="44" fill="#8ABCCF" rx="1" opacity="0.85"/><rect x="210" y="102" width="80" height="26" fill="#A07040" rx="2"/><polygon points="30,42 58,140 2,140" fill="#3A6A2A" opacity="0.9"/><polygon points="465,38 495,140 435,140" fill="#4A7A3A" opacity="0.9"/></svg>
+            <span class="prop-status available"><span class="dot"></span> Available</span>
+          </div>
+          <div class="prop-card-body">
+            <p class="prop-card-location">Vittoria · Forte dei Marmi</p>
+            <p class="prop-card-name">Appartamento Azzurro</p>
+            <div class="prop-card-stats">
+              <div class="prop-stat"><span class="prop-stat-val">€1,600</span><span class="prop-stat-label">/ week</span></div>
+              <div class="prop-stat"><span class="prop-stat-val">65%</span><span class="prop-stat-label">Occupancy</span></div>
+              <div class="prop-stat"><span class="prop-stat-val">€8.8k</span><span class="prop-stat-label">2024 rev.</span></div>
+            </div>
+            <div class="prop-card-footer">
+              <button class="prop-btn" onclick="openModal('Appartamento Azzurro','🏠','General')">Request service</button>
+              <button class="prop-btn primary">View details</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-right">
+      <!-- Revenue chart -->
+      <div class="card-shell">
+        <div class="card-shell-title">Monthly revenue <a href="#">See full report</a></div>
+        <div class="rev-chart">
+          <div class="rev-bar" style="height:22%" title="Jan: €0"></div>
+          <div class="rev-bar" style="height:10%" title="Feb: €0"></div>
+          <div class="rev-bar" style="height:15%" title="Mar: €0"></div>
+          <div class="rev-bar" style="height:12%" title="Apr: €0"></div>
+          <div class="rev-bar" style="height:35%" title="May: €2,400"></div>
+          <div class="rev-bar current" style="height:88%" title="Jun: €4,800"></div>
+          <div class="rev-bar current" style="height:100%" title="Jul: €6,000"></div>
+          <div class="rev-bar current" style="height:94%" title="Aug: €4,000"></div>
+          <div class="rev-bar" style="height:55%" title="Sep: €1,600"></div>
+          <div class="rev-bar" style="height:14%" title="Oct: €0"></div>
+          <div class="rev-bar" style="height:8%" title="Nov: €0"></div>
+          <div class="rev-bar" style="height:5%" title="Dec: €0"></div>
+        </div>
+        <div class="rev-labels">
+          <div class="rev-label">J</div><div class="rev-label">F</div><div class="rev-label">M</div>
+          <div class="rev-label">A</div><div class="rev-label">M</div>
+          <div class="rev-label" style="color:var(--sea);font-weight:500">J</div>
+          <div class="rev-label" style="color:var(--sea);font-weight:500">J</div>
+          <div class="rev-label" style="color:var(--sea);font-weight:500">A</div>
+          <div class="rev-label">S</div><div class="rev-label">O</div>
+          <div class="rev-label">N</div><div class="rev-label">D</div>
+        </div>
+      </div>
+
+      <!-- Upcoming bookings -->
+      <div class="card-shell">
+        <div class="card-shell-title">Upcoming bookings <a href="#">View all</a></div>
+        <div class="booking-item">
+          <div class="booking-date"><div class="booking-date-day">28</div><div class="booking-date-mon">Jun</div></div>
+          <div class="booking-info">
+            <div class="booking-name">Schmidt family</div>
+            <div class="booking-meta">Villa delle Mimose · Munich, DE</div>
+          </div>
+          <div class="booking-nights">14 nights</div>
+        </div>
+        <div class="booking-item">
+          <div class="booking-date" style="background:var(--sea)"><div class="booking-date-day">19</div><div class="booking-date-mon">Jul</div></div>
+          <div class="booking-info">
+            <div class="booking-name">Dupont family</div>
+            <div class="booking-meta">Appartamento Azzurro · Paris, FR</div>
+          </div>
+          <div class="booking-nights">7 nights</div>
+        </div>
+        <div class="booking-item">
+          <div class="booking-date" style="background:#8A9BAC"><div class="booking-date-day">12</div><div class="booking-date-mon">Aug</div></div>
+          <div class="booking-info">
+            <div class="booking-name">Hoffmann couple</div>
+            <div class="booking-meta">Villa delle Mimose · Hamburg, DE</div>
+          </div>
+          <div class="booking-nights">10 nights</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAINTENANCE REQUESTS ── -->
+  <div class="maintenance-wrap" id="maintenance">
+    <p class="section-label">Property care</p>
+    <p class="section-heading">Request a Service</p>
+
+    <!-- Category tabs -->
+    <div class="category-tabs">
+      <button class="cat-tab active" data-panel="garden" onclick="switchCat(this,'garden')">
+        <span class="cat-icon">🌿</span> Garden & Outdoor
+      </button>
+      <button class="cat-tab" data-panel="plumbing" onclick="switchCat(this,'plumbing')">
+        <span class="cat-icon">🔧</span> Plumbing & Hydraulics
+      </button>
+      <button class="cat-tab" data-panel="pest" onclick="switchCat(this,'pest')">
+        <span class="cat-icon">🐛</span> Pest & Hygiene
+      </button>
+      <button class="cat-tab" data-panel="interior" onclick="switchCat(this,'interior')">
+        <span class="cat-icon">🎨</span> Interior & Design
+      </button>
+      <button class="cat-tab" data-panel="general" onclick="switchCat(this,'general')">
+        <span class="cat-icon">🏠</span> General
+      </button>
+    </div>
+
+    <!-- Garden & Outdoor -->
+    <div class="services-panel active" id="panel-garden">
+      <button class="service-btn" onclick="openModal('Lawn mowing','🌱','Garden & Outdoor')">
+        <span class="service-btn-icon">🌱</span>
+        <span class="service-btn-label">Lawn mowing</span>
+        <span class="service-btn-desc">Regular cut & edge trim</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Hedge & tree trimming','🌳','Garden & Outdoor')">
+        <span class="service-btn-icon">🌳</span>
+        <span class="service-btn-label">Hedge & tree trimming</span>
+        <span class="service-btn-desc">Shaping and pruning</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Pool cleaning','🏊','Garden & Outdoor')">
+        <span class="service-btn-icon">🏊</span>
+        <span class="service-btn-label">Pool cleaning</span>
+        <span class="service-btn-desc">Chemical balance & cleaning</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Irrigation check','💧','Garden & Outdoor')">
+        <span class="service-btn-icon">💧</span>
+        <span class="service-btn-label">Irrigation system</span>
+        <span class="service-btn-desc">Check, repair, reprogram</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Garden deep clean','🍂','Garden & Outdoor')">
+        <span class="service-btn-icon">🍂</span>
+        <span class="service-btn-label">Seasonal garden clean</span>
+        <span class="service-btn-desc">Leaves, weeds, general tidy</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Outdoor furniture care','🪑','Garden & Outdoor')">
+        <span class="service-btn-icon">🪑</span>
+        <span class="service-btn-label">Outdoor furniture</span>
+        <span class="service-btn-desc">Cleaning, repair, storage</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Terrace & patio cleaning','🧹','Garden & Outdoor')">
+        <span class="service-btn-icon">🧹</span>
+        <span class="service-btn-label">Terrace & patio</span>
+        <span class="service-btn-desc">Pressure wash & tidying</span>
+      </button>
+      <button class="service-btn" onclick="openModal('New planting','🌸','Garden & Outdoor')">
+        <span class="service-btn-icon">🌸</span>
+        <span class="service-btn-label">Seasonal planting</span>
+        <span class="service-btn-desc">Flowers, pots, borders</span>
+      </button>
+    </div>
+
+    <!-- Plumbing & Hydraulics -->
+    <div class="services-panel" id="panel-plumbing">
+      <button class="service-btn" onclick="openModal('Pipe inspection','🔍','Plumbing & Hydraulics')">
+        <span class="service-btn-icon">🔍</span>
+        <span class="service-btn-label">Pipe inspection</span>
+        <span class="service-btn-desc">Full plumbing check</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Leak repair','💦','Plumbing & Hydraulics')">
+        <span class="service-btn-icon">💦</span>
+        <span class="service-btn-label">Leak repair</span>
+        <span class="service-btn-desc">Pipes, taps, fixtures</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Drain unblocking','🚿','Plumbing & Hydraulics')">
+        <span class="service-btn-icon">🚿</span>
+        <span class="service-btn-label">Drain unblocking</span>
+        <span class="service-btn-desc">Sink, shower, bath, toilet</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Water heater service','🔥','Plumbing & Hydraulics')">
+        <span class="service-btn-icon">🔥</span>
+        <span class="service-btn-label">Water heater</span>
+        <span class="service-btn-desc">Service, repair or replace</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Boiler service','🌡️','Plumbing & Hydraulics')">
+        <span class="service-btn-icon">🌡️</span>
+        <span class="service-btn-label">Boiler & heating</span>
+        <span class="service-btn-desc">Annual service & check</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Tap & mixer replacement','🪠','Plumbing & Hydraulics')">
+        <span class="service-btn-icon">🪠</span>
+        <span class="service-btn-label">Tap replacement</span>
+        <span class="service-btn-desc">Taps, mixers, showerheads</span>
+      </button>
+    </div>
+
+    <!-- Pest & Hygiene -->
+    <div class="services-panel" id="panel-pest">
+      <button class="service-btn" onclick="openModal('General disinfestation','🐛','Pest & Hygiene')">
+        <span class="service-btn-icon">🐛</span>
+        <span class="service-btn-label">Disinfestation</span>
+        <span class="service-btn-desc">Insects, ants, cockroaches</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Mosquito treatment','🦟','Pest & Hygiene')">
+        <span class="service-btn-icon">🦟</span>
+        <span class="service-btn-label">Mosquito treatment</span>
+        <span class="service-btn-desc">Garden & indoor spray</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Rodent control','🐀','Pest & Hygiene')">
+        <span class="service-btn-icon">🐀</span>
+        <span class="service-btn-label">Rodent control</span>
+        <span class="service-btn-desc">Prevention & removal</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Deep cleaning','🧽','Pest & Hygiene')">
+        <span class="service-btn-icon">🧽</span>
+        <span class="service-btn-label">Deep cleaning</span>
+        <span class="service-btn-desc">Full property deep clean</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Mould treatment','🫧','Pest & Hygiene')">
+        <span class="service-btn-icon">🫧</span>
+        <span class="service-btn-label">Mould & damp treatment</span>
+        <span class="service-btn-desc">Treatment and prevention</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Air quality check','🌬️','Pest & Hygiene')">
+        <span class="service-btn-icon">🌬️</span>
+        <span class="service-btn-label">Air quality check</span>
+        <span class="service-btn-desc">Filters, vents, AC ducts</span>
+      </button>
+    </div>
+
+    <!-- Interior & Design -->
+    <div class="services-panel" id="panel-interior">
+      <button class="service-btn" onclick="openModal('Interior painting','🎨','Interior & Design')">
+        <span class="service-btn-icon">🎨</span>
+        <span class="service-btn-label">Interior painting</span>
+        <span class="service-btn-desc">Rooms, ceilings, trim</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Furniture repair','🛋️','Interior & Design')">
+        <span class="service-btn-icon">🛋️</span>
+        <span class="service-btn-label">Furniture repair</span>
+        <span class="service-btn-desc">Fix, refinish or replace</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Interior design consultation','✏️','Interior & Design')">
+        <span class="service-btn-icon">✏️</span>
+        <span class="service-btn-label">Design consultation</span>
+        <span class="service-btn-desc">Refresh layout & style</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Flooring repair','🪵','Interior & Design')">
+        <span class="service-btn-icon">🪵</span>
+        <span class="service-btn-label">Flooring</span>
+        <span class="service-btn-desc">Repair, polish or replace</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Window & shutters','🪟','Interior & Design')">
+        <span class="service-btn-icon">🪟</span>
+        <span class="service-btn-label">Windows & shutters</span>
+        <span class="service-btn-desc">Repair, repaint, replace</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Curtains & blinds','🪞','Interior & Design')">
+        <span class="service-btn-icon">🪞</span>
+        <span class="service-btn-label">Curtains & blinds</span>
+        <span class="service-btn-desc">Install, repair or clean</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Tiling repair','🧱','Interior & Design')">
+        <span class="service-btn-icon">🧱</span>
+        <span class="service-btn-label">Tiling</span>
+        <span class="service-btn-desc">Replace or grout tiles</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Lighting update','💡','Interior & Design')">
+        <span class="service-btn-icon">💡</span>
+        <span class="service-btn-label">Lighting update</span>
+        <span class="service-btn-desc">Fixtures, bulbs, fittings</span>
+      </button>
+    </div>
+
+    <!-- General -->
+    <div class="services-panel" id="panel-general">
+      <button class="service-btn" onclick="openModal('Electrical check','⚡','General')">
+        <span class="service-btn-icon">⚡</span>
+        <span class="service-btn-label">Electrical check</span>
+        <span class="service-btn-desc">Sockets, fuse board, wiring</span>
+      </button>
+      <button class="service-btn" onclick="openModal('AC & ventilation service','❄️','General')">
+        <span class="service-btn-icon">❄️</span>
+        <span class="service-btn-label">AC service</span>
+        <span class="service-btn-desc">Clean, service, regas</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Locks & security','🔐','General')">
+        <span class="service-btn-icon">🔐</span>
+        <span class="service-btn-label">Locks & security</span>
+        <span class="service-btn-desc">Replace, repair, re-key</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Appliance repair','🧺','General')">
+        <span class="service-btn-icon">🧺</span>
+        <span class="service-btn-label">Appliance repair</span>
+        <span class="service-btn-desc">Washing machine, dishwasher…</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Pre-season inspection','🔎','General')">
+        <span class="service-btn-icon">🔎</span>
+        <span class="service-btn-label">Pre-season inspection</span>
+        <span class="service-btn-desc">Full walkthrough report</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Post-season inspection','📋','General')">
+        <span class="service-btn-icon">📋</span>
+        <span class="service-btn-label">Post-season inspection</span>
+        <span class="service-btn-desc">Close-up & winterisation</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Emergency call-out','🚨','General')">
+        <span class="service-btn-icon">🚨</span>
+        <span class="service-btn-label">Emergency call-out</span>
+        <span class="service-btn-desc">Urgent issue — we'll respond fast</span>
+      </button>
+      <button class="service-btn" onclick="openModal('Other request','📝','General')">
+        <span class="service-btn-icon">📝</span>
+        <span class="service-btn-label">Other</span>
+        <span class="service-btn-desc">Describe your request</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── REQUEST HISTORY ── -->
+  <div id="history">
+    <p class="section-label">Recent activity</p>
+    <p class="section-heading">Request History</p>
+    <div class="requests-list">
+      <div class="request-item">
+        <div class="request-icon garden">🌱</div>
+        <div class="request-info">
+          <div class="request-title">Lawn mowing — Villa delle Mimose</div>
+          <div class="request-meta">Requested 14 Jun 2025 · Garden & Outdoor</div>
+        </div>
+        <span class="request-status done">Completed</span>
+      </div>
+      <div class="request-item">
+        <div class="request-icon plumbing">💦</div>
+        <div class="request-info">
+          <div class="request-title">Leak repair — Appartamento Azzurro</div>
+          <div class="request-meta">Requested 10 Jun 2025 · Plumbing & Hydraulics</div>
+        </div>
+        <span class="request-status progress">In progress</span>
+      </div>
+      <div class="request-item">
+        <div class="request-icon pest">🦟</div>
+        <div class="request-info">
+          <div class="request-title">Mosquito treatment — Villa delle Mimose</div>
+          <div class="request-meta">Requested 2 Jun 2025 · Pest & Hygiene</div>
+        </div>
+        <span class="request-status pending">Pending</span>
+      </div>
+      <div class="request-item">
+        <div class="request-icon interior">🎨</div>
+        <div class="request-info">
+          <div class="request-title">Interior painting — Appartamento Azzurro</div>
+          <div class="request-meta">Completed 18 May 2025 · Interior & Design</div>
+        </div>
+        <span class="request-status done">Completed</span>
+      </div>
+      <div class="request-item">
+        <div class="request-icon garden">🏊</div>
+        <div class="request-info">
+          <div class="request-title">Pool cleaning — Villa delle Mimose</div>
+          <div class="request-meta">Completed 1 May 2025 · Garden & Outdoor</div>
+        </div>
+        <span class="request-status done">Completed</span>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── SERVICE REQUEST MODAL ── -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-icon" id="modalIcon"></div>
+    <h2 class="modal-title" id="modalTitle"></h2>
+    <p class="modal-sub" id="modalSub"></p>
+
+    <div class="modal-field">
+      <label>Property</label>
+      <select class="modal-input" id="modalProperty">
+        <option value="Villa delle Mimose">Villa delle Mimose</option>
+        <option value="Appartamento Azzurro">Appartamento Azzurro</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label>Description <span style="color:var(--muted);font-weight:300">(optional)</span></label>
+      <textarea class="modal-input" id="modalDesc" placeholder="Any additional details for our team…"></textarea>
+    </div>
+    <div class="modal-field">
+      <label>Preferred date</label>
+      <input type="date" class="modal-input" id="modalDate">
+    </div>
+    <div class="modal-field">
+      <label>Urgency</label>
+      <div class="urgency-row">
+        <button type="button" class="urgency-opt low selected" onclick="selectUrgency(this,'low')">🟢 Low</button>
+        <button type="button" class="urgency-opt medium" onclick="selectUrgency(this,'medium')">🟡 Medium</button>
+        <button type="button" class="urgency-opt high" onclick="selectUrgency(this,'high')">🔴 Urgent</button>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-submit-req" onclick="submitRequest()">Send request</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">✅ &nbsp;Request sent! We'll be in touch shortly.</div>
+
+<script>
+  // ── DATE ──────────────────────────────────────────────
+  document.getElementById('pageDate').textContent = new Date().toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  document.getElementById('modalDate').valueAsDate = new Date();
+
+  // ── SIDEBAR ACTIVE ────────────────────────────────────
+  const sideLinks = document.querySelectorAll('.sidebar-nav a');
+  window.addEventListener('scroll', () => {
+    const anchors = ['overview','properties','maintenance','history'];
+    let current = 'overview';
+    anchors.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top < 180) current = id;
+    });
+    sideLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }, { passive: true });
+
+  // ── CATEGORY TABS ─────────────────────────────────────
+  function switchCat(tab, panel) {
+    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.services-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + panel).classList.add('active');
+  }
+
+  // ── MODAL ─────────────────────────────────────────────
+  let selectedUrgency = 'low';
+
+  function openModal(service, icon, category) {
+    document.getElementById('modalIcon').textContent = icon;
+    document.getElementById('modalTitle').textContent = service;
+    document.getElementById('modalSub').textContent = 'Category: ' + category + ' · Pastore Real Estate team will review and confirm within 24h.';
+    document.getElementById('modalDesc').value = '';
+    selectedUrgency = 'low';
+    document.querySelectorAll('.urgency-opt').forEach(b => {
+      b.classList.remove('selected');
+      if (b.classList.contains('low')) b.classList.add('selected');
+    });
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+
+  document.getElementById('modalOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  function selectUrgency(btn, level) {
+    document.querySelectorAll('.urgency-opt').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedUrgency = level;
+  }
+
+  function submitRequest() {
+    closeModal();
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3500);
+  }
+
+  // ── SMOOTH SCROLL FOR SIDEBAR LINKS ──────────────────
+  document.querySelectorAll('.sidebar-nav a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Owner Login — Pastore Real Estate</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --sand: #F5F0E8; --deep: #1A2B3C; --sea: #2D6A8F;
+    --sea-light: #4A8FB5; --foam: #E8F4F8; --gold: #C9A96E;
+    --text: #2A2A2A; --muted: #8A8A8A;
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--sand); color: var(--text);
+    min-height: 100vh; display: flex; flex-direction: column;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 4rem; height: 68px;
+    background: rgba(245,240,232,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(201,169,110,0.2);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif; font-size: 1.4rem;
+    color: var(--deep); text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--deep);
+    font-size: 0.875rem; font-weight: 400; letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--sea); }
+  .nav-cta {
+    background: var(--deep); color: white !important;
+    padding: 0.55rem 1.4rem; border-radius: 100px;
+    font-size: 0.85rem !important; transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--sea) !important; }
+
+  /* ── LAYOUT ── */
+  .auth-wrap {
+    display: flex; flex: 1;
+    margin-top: 68px;
+    min-height: calc(100vh - 68px);
+  }
+
+  /* ── LEFT PANEL ── */
+  .auth-left {
+    width: 42%; background: var(--deep);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 5rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .auth-left::before {
+    content: '';
+    position: absolute; top: -120px; right: -120px;
+    width: 500px; height: 500px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(45,106,143,0.35) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .auth-left::after {
+    content: '';
+    position: absolute; bottom: -80px; left: -80px;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,169,110,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .left-logo {
+    font-family: 'Playfair Display', serif; font-size: 1.4rem;
+    color: white; text-decoration: none; margin-bottom: 3rem; display: block;
+  }
+  .left-logo span { color: var(--gold); }
+  .left-tagline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+    color: white; line-height: 1.25; margin-bottom: 1.25rem;
+  }
+  .left-tagline em { font-style: italic; color: var(--sea-light); }
+  .left-desc {
+    font-size: 0.92rem; line-height: 1.7;
+    color: rgba(255,255,255,0.55); font-weight: 300;
+    margin-bottom: 3rem; max-width: 340px;
+  }
+  .left-features { display: flex; flex-direction: column; gap: 0.85rem; }
+  .left-feature {
+    display: flex; align-items: center; gap: 0.9rem;
+    padding: 0.85rem 1.1rem; border-radius: 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .left-feature-icon { font-size: 1.2rem; flex-shrink: 0; }
+  .left-feature-text { font-size: 0.82rem; color: rgba(255,255,255,0.75); }
+  .left-feature-text strong { display: block; color: white; font-weight: 500; margin-bottom: 0.1rem; }
+
+  /* ── RIGHT PANEL ── */
+  .auth-right {
+    flex: 1;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 5rem 5rem;
+    background: var(--sand);
+  }
+  .auth-right-inner { max-width: 400px; }
+
+  .auth-eyebrow {
+    font-size: 0.72rem; font-weight: 500; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem;
+  }
+  .auth-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; color: var(--deep); margin-bottom: 0.4rem;
+  }
+  .auth-subtitle {
+    font-size: 0.9rem; color: var(--muted); font-weight: 300;
+    margin-bottom: 2.25rem;
+  }
+
+  /* ── FORM ── */
+  .form-group { margin-bottom: 1.25rem; }
+  .form-group label {
+    display: block; font-size: 0.82rem; font-weight: 500;
+    color: var(--deep); margin-bottom: 0.45rem;
+  }
+  .form-input {
+    width: 100%;
+    border: 1.5px solid #E0DAD0; border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--text);
+    background: white; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-input:focus {
+    border-color: var(--sea);
+    box-shadow: 0 0 0 3px rgba(45,106,143,0.1);
+  }
+  .form-input::placeholder { color: var(--muted); }
+  .form-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 0.45rem;
+  }
+  .form-row label { margin-bottom: 0; }
+  .forgot {
+    font-size: 0.78rem; color: var(--sea); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .forgot:hover { color: var(--deep); }
+
+  .btn-login {
+    width: 100%; padding: 0.9rem;
+    background: var(--deep); color: white;
+    border: none; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500;
+    cursor: pointer; transition: background 0.2s, transform 0.15s;
+    margin-top: 0.5rem;
+  }
+  .btn-login:hover { background: var(--sea); transform: translateY(-1px); }
+  .btn-login:active { transform: translateY(0); }
+
+  /* Loading state */
+  .btn-login.loading {
+    background: var(--sea); pointer-events: none;
+    opacity: 0.8;
+  }
+
+  /* ── DIVIDER ── */
+  .auth-divider {
+    display: flex; align-items: center; gap: 1rem;
+    margin: 1.75rem 0;
+  }
+  .auth-divider::before, .auth-divider::after {
+    content: ''; flex: 1; height: 1px; background: #E0DAD0;
+  }
+  .auth-divider span { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
+
+  /* ── REGISTER CTA ── */
+  .register-cta {
+    display: flex; align-items: center; justify-content: space-between;
+    border: 1.5px solid rgba(201,169,110,0.4);
+    border-radius: 14px; padding: 1.2rem 1.4rem;
+    background: white; text-decoration: none;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .register-cta:hover {
+    border-color: var(--gold);
+    box-shadow: 0 6px 24px rgba(201,169,110,0.15);
+    transform: translateY(-2px);
+  }
+  .register-cta-left {}
+  .register-cta-label {
+    font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 0.25rem;
+  }
+  .register-cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem; color: var(--deep);
+  }
+  .register-cta-desc {
+    font-size: 0.78rem; color: var(--muted); font-weight: 300; margin-top: 0.2rem;
+  }
+  .register-cta-arrow {
+    font-size: 1.3rem; color: var(--gold); flex-shrink: 0; margin-left: 1rem;
+  }
+
+  /* ── SUCCESS STATE ── */
+  .success-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 500;
+    background: white;
+    flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 2rem;
+    animation: fadeIn 0.4s ease;
+  }
+  .success-overlay.show { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .success-icon { font-size: 3.5rem; margin-bottom: 1.5rem; }
+  .success-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; color: var(--deep); margin-bottom: 0.75rem;
+  }
+  .success-desc { font-size: 1rem; color: var(--muted); font-weight: 300; max-width: 360px; }
+  .success-back {
+    margin-top: 2.5rem;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--deep); color: white;
+    padding: 0.8rem 2rem; border-radius: 100px;
+    font-size: 0.9rem; font-weight: 500; text-decoration: none;
+    transition: background 0.2s;
+  }
+  .success-back:hover { background: var(--sea); }
+
+  @media (max-width: 860px) {
+    .auth-left { display: none; }
+    .auth-right { padding: 3rem 2rem; justify-content: flex-start; padding-top: 4rem; }
+    nav { padding: 0 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="website.html" class="nav-logo">Pastore<span> Real Estate</span></a>
+  <ul class="nav-links">
+    <li><a href="rentals.html">Rentals</a></li>
+    <li><a href="owners.html" class="active">For Owners</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html" class="nav-cta">Get in Touch</a></li>
+  </ul>
+</nav>
+
+<div class="auth-wrap">
+
+  <!-- LEFT: brand panel -->
+  <div class="auth-left">
+    <a href="website.html" class="left-logo">Pastore<span> Real Estate</span></a>
+    <h2 class="left-tagline">Your home in the <em>best hands</em>.</h2>
+    <p class="left-desc">Access your owner dashboard to track rental income, upcoming bookings, maintenance updates and your property's performance — all in one place.</p>
+    <div class="left-features">
+      <div class="left-feature">
+        <span class="left-feature-icon">📊</span>
+        <div class="left-feature-text"><strong>Rental dashboard</strong>Income, occupancy and trends at a glance</div>
+      </div>
+      <div class="left-feature">
+        <span class="left-feature-icon">📅</span>
+        <div class="left-feature-text"><strong>Booking calendar</strong>See who's staying and when</div>
+      </div>
+      <div class="left-feature">
+        <span class="left-feature-icon">🔧</span>
+        <div class="left-feature-text"><strong>Maintenance tracker</strong>Open tasks, completed jobs, reports</div>
+      </div>
+      <div class="left-feature">
+        <span class="left-feature-icon">💶</span>
+        <div class="left-feature-text"><strong>Income reports</strong>Monthly statements, ready to download</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: login form -->
+  <div class="auth-right">
+    <div class="auth-right-inner">
+      <p class="auth-eyebrow">Owner portal</p>
+      <h1 class="auth-title">Welcome back</h1>
+      <p class="auth-subtitle">Sign in to access your property dashboard.</p>
+
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label for="loginEmail">Email address</label>
+          <input type="email" id="loginEmail" class="form-input" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <div class="form-row">
+            <label for="loginPassword">Password</label>
+            <a href="#" class="forgot">Forgot password?</a>
+          </div>
+          <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
+        </div>
+        <p id="loginError" style="font-size:0.82rem;color:#c0392b;margin-bottom:0.75rem;display:none">
+          Please fill in both fields to continue.
+        </p>
+        <button type="submit" class="btn-login" id="loginBtn">Sign in</button>
+      </form>
+
+      <div class="auth-divider"><span>First time with us?</span></div>
+
+      <a href="register.html" class="register-cta">
+        <div class="register-cta-left">
+          <div class="register-cta-label">New owner</div>
+          <div class="register-cta-title">Register your property</div>
+          <div class="register-cta-desc">Tell us about your home — takes just a few minutes.</div>
+        </div>
+        <span class="register-cta-arrow">→</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS overlay (simulated login) -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-icon">🏡</div>
+  <h2 class="success-title">You're signed in</h2>
+  <p class="success-desc">Welcome back! Your dashboard is loading…<br>
+  <span style="font-size:0.82rem;color:var(--muted);margin-top:0.5rem;display:block">(Dashboard coming soon — we'll notify you when it's ready.)</span></p>
+  <a href="website.html" class="success-back">← Back to homepage</a>
+</div>
+
+<script>
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginPassword').value.trim();
+    const errEl = document.getElementById('loginError');
+    const btn   = document.getElementById('loginBtn');
+
+    if (!email || !pass) {
+      errEl.style.display = 'block';
+      return;
+    }
+    errEl.style.display = 'none';
+    btn.textContent = 'Signing in…';
+    btn.classList.add('loading');
+
+    setTimeout(() => {
+      window.location.href = 'dashboard.html';
+    }, 1200);
+  });
+</script>
+</body>
+</html>

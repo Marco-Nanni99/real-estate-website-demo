@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rentals — Pastore Real Estate</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sand: #F5F0E8;
+    --deep: #1A2B3C;
+    --sea: #2D6A8F;
+    --sea-light: #4A8FB5;
+    --foam: #E8F4F8;
+    --gold: #C9A96E;
+    --text: #2A2A2A;
+    --muted: #8A8A8A;
+    --nav-h: 68px;
+    --filter-h: 64px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--sand);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: var(--nav-h);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 4rem;
+    background: rgba(245,240,232,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(201,169,110,0.2);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--deep);
+    letter-spacing: 0.01em;
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links {
+    display: flex; gap: 2.5rem; list-style: none;
+  }
+  .nav-links a {
+    text-decoration: none; color: var(--deep);
+    font-size: 0.875rem; font-weight: 400; letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--sea); }
+  .nav-cta {
+    background: var(--deep); color: white !important;
+    padding: 0.55rem 1.4rem; border-radius: 100px;
+    font-size: 0.85rem !important;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--sea) !important; color: white !important; }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    position: fixed;
+    top: var(--nav-h); left: 0; right: 0; z-index: 100;
+    height: var(--filter-h);
+    background: white;
+    border-bottom: 1px solid #EAE6DF;
+    display: flex; align-items: center;
+    padding: 0 2rem; gap: 0.75rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .filter-input {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: var(--sand); border-radius: 100px;
+    padding: 0.45rem 1rem;
+    flex: 1; max-width: 260px;
+  }
+  .filter-input input {
+    border: none; outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem; color: var(--text);
+    background: transparent; width: 100%;
+  }
+  .filter-select {
+    appearance: none;
+    border: 1.5px solid #E0DAD0; border-radius: 100px;
+    padding: 0.45rem 2rem 0.45rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; color: var(--text);
+    background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238A8A8A'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+    cursor: pointer; outline: none;
+    transition: border-color 0.2s;
+  }
+  .filter-select:focus { border-color: var(--sea); }
+
+  /* ── AMENITY CHECKBOX DROPDOWN ── */
+  .amenity-dropdown { position: relative; }
+  .amenity-trigger {
+    display: flex; align-items: center; gap: 0.5rem;
+    border: 1.5px solid #E0DAD0; border-radius: 100px;
+    padding: 0.45rem 1rem;
+    background: white; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; color: var(--text);
+    transition: border-color 0.2s;
+    white-space: nowrap; user-select: none;
+  }
+  .amenity-trigger.active { border-color: var(--sea); }
+  .amenity-trigger.has-selection { border-color: var(--deep); background: var(--deep); color: white; }
+  .amenity-trigger .trigger-arrow {
+    font-size: 0.6rem; color: var(--muted); margin-left: 0.15rem; transition: transform 0.2s;
+  }
+  .amenity-trigger.has-selection .trigger-arrow { color: rgba(255,255,255,0.6); }
+  .amenity-trigger.open .trigger-arrow { transform: rotate(180deg); }
+  .amenity-badge {
+    background: var(--gold); color: var(--deep);
+    border-radius: 100px; padding: 0.05rem 0.45rem;
+    font-size: 0.72rem; font-weight: 600;
+  }
+  .amenity-trigger.has-selection .amenity-badge { background: white; }
+
+  .amenity-panel {
+    display: none;
+    position: absolute; top: calc(100% + 6px); left: 0; z-index: 300;
+    background: white; border-radius: 14px;
+    border: 1.5px solid #E0DAD0;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+    padding: 0.5rem 0;
+    min-width: 180px;
+  }
+  .amenity-panel.open { display: block; }
+  .amenity-option {
+    display: flex; align-items: center; gap: 0.65rem;
+    padding: 0.55rem 1rem; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .amenity-option:hover { background: var(--foam); }
+  .amenity-option input[type="checkbox"] {
+    width: 15px; height: 15px; accent-color: var(--deep);
+    cursor: pointer; flex-shrink: 0;
+  }
+  .amenity-option label {
+    font-size: 0.85rem; color: var(--text); cursor: pointer;
+  }
+  .amenity-divider { height: 1px; background: #F0EDE8; margin: 0.25rem 0; }
+  .amenity-clear-row {
+    padding: 0.4rem 1rem;
+  }
+  .amenity-clear-link {
+    font-size: 0.75rem; color: var(--muted); cursor: pointer;
+    background: none; border: none; font-family: 'DM Sans', sans-serif;
+    padding: 0; transition: color 0.15s;
+  }
+  .amenity-clear-link:hover { color: var(--sea); }
+
+  .price-range {
+    display: flex; align-items: center; gap: 0.35rem;
+    border: 1.5px solid #E0DAD0; border-radius: 100px;
+    padding: 0.4rem 0.9rem;
+    background: white;
+    transition: border-color 0.2s;
+  }
+  .price-range:focus-within { border-color: var(--sea); }
+  .price-range-label {
+    font-size: 0.8rem; color: var(--muted); white-space: nowrap; user-select: none;
+  }
+  .price-range-sep { font-size: 0.8rem; color: var(--muted); }
+  .price-input {
+    border: none; outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; color: var(--text);
+    width: 68px; background: transparent;
+    -moz-appearance: textfield;
+  }
+  .price-input::-webkit-outer-spin-button,
+  .price-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .price-input::placeholder { color: var(--muted); }
+
+  .filter-btn {
+    background: var(--deep); color: white;
+    border: none; border-radius: 100px;
+    padding: 0.5rem 1.4rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; font-weight: 500;
+    cursor: pointer; transition: background 0.2s;
+    margin-left: auto;
+  }
+  .filter-btn:hover { background: var(--sea); }
+  .results-count {
+    font-size: 0.8rem; color: var(--muted);
+    white-space: nowrap; margin-left: 0.5rem;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .layout {
+    display: flex;
+    margin-top: calc(var(--nav-h) + var(--filter-h));
+    height: calc(100vh - var(--nav-h) - var(--filter-h));
+  }
+
+  /* ── MAP PANE ── */
+  .map-pane {
+    position: sticky;
+    top: calc(var(--nav-h) + var(--filter-h));
+    width: 42%;
+    height: calc(100vh - var(--nav-h) - var(--filter-h));
+    flex-shrink: 0;
+  }
+  #map {
+    width: 100%; height: 100%;
+  }
+
+  /* Leaflet price marker wrapper — must be transparent, no clipping */
+  .price-marker-wrap {
+    background: transparent !important;
+    border: none !important;
+    overflow: visible !important;
+  }
+
+  /* Leaflet price marker */
+  .price-marker {
+    background: white;
+    border: 2px solid var(--deep);
+    border-radius: 100px;
+    padding: 4px 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem; font-weight: 500;
+    color: var(--deep);
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: all 0.15s;
+    position: absolute;
+    transform: translate(-50%, -50%);
+  }
+  .price-marker.hovered, .price-marker.active {
+    background: var(--deep); color: white;
+    border-color: var(--deep);
+    transform: translate(-50%, -50%) scale(1.1);
+    z-index: 9999 !important;
+  }
+
+  /* ── LISTINGS PANE ── */
+  .listings-pane {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem 2rem 3rem;
+    background: var(--sand);
+  }
+  .listings-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+  .listings-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem; color: var(--deep);
+  }
+  .sort-select {
+    appearance: none;
+    border: 1.5px solid #E0DAD0; border-radius: 100px;
+    padding: 0.35rem 2rem 0.35rem 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem; color: var(--muted);
+    background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238A8A8A'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+    cursor: pointer; outline: none;
+  }
+
+  /* ── PROPERTY CARDS (listing style) ── */
+  .listings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+
+  .prop-card {
+    background: white; border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    transition: transform 0.22s, box-shadow 0.22s;
+    cursor: pointer;
+    border: 2px solid transparent;
+  }
+  .prop-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 32px rgba(0,0,0,0.12);
+  }
+  .prop-card.hovered {
+    border-color: var(--gold);
+    box-shadow: 0 8px 28px rgba(201,169,110,0.25);
+  }
+
+  .prop-img {
+    height: 180px; position: relative; overflow: hidden;
+  }
+  .prop-img svg { width: 100%; height: 100%; display: block; }
+  .prop-badge {
+    position: absolute; top: 0.75rem; left: 0.75rem;
+    background: white; border-radius: 100px;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.7rem; font-weight: 500; color: var(--deep);
+  }
+  .prop-fav {
+    position: absolute; top: 0.65rem; right: 0.75rem;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: white; display: flex; align-items: center; justify-content: center;
+    font-size: 0.95rem; cursor: pointer; transition: transform 0.15s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  .prop-fav:hover { transform: scale(1.15); }
+
+  .prop-body { padding: 1rem 1.1rem 1.2rem; }
+  .prop-location {
+    font-size: 0.68rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 0.25rem;
+  }
+  .prop-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem; color: var(--deep);
+    margin-bottom: 0.4rem; line-height: 1.3;
+  }
+  .prop-tags {
+    display: flex; flex-wrap: wrap; gap: 0.3rem;
+    margin-bottom: 0.75rem;
+  }
+  .prop-tag {
+    background: var(--foam); color: var(--sea);
+    padding: 0.15rem 0.55rem; border-radius: 100px;
+    font-size: 0.68rem; font-weight: 500;
+  }
+  .prop-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 0.75rem;
+    border-top: 1px solid #F0EDE8;
+  }
+  .prop-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem; color: var(--deep);
+  }
+  .prop-price span {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem; font-weight: 300; color: var(--muted);
+  }
+  .prop-rating {
+    display: flex; align-items: center; gap: 0.25rem;
+    font-size: 0.8rem; color: var(--deep); font-weight: 500;
+  }
+  .prop-rating .star { color: var(--gold); }
+
+  .no-results {
+    grid-column: 1 / -1;
+    text-align: center; padding: 3rem 0;
+    color: var(--muted);
+  }
+  .no-results p { font-size: 1rem; margin-top: 0.5rem; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(26,43,60,0.55);
+    backdrop-filter: blur(4px);
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white; border-radius: 24px;
+    width: 90%; max-width: 680px;
+    max-height: 88vh; overflow-y: auto;
+    position: relative;
+    animation: modalIn 0.25s ease both;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .modal-close {
+    position: absolute; top: 1rem; right: 1rem; z-index: 10;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: white; border: none; cursor: pointer;
+    font-size: 1.1rem; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    color: var(--deep);
+  }
+  .modal-img { height: 280px; overflow: hidden; border-radius: 24px 24px 0 0; }
+  .modal-img svg { width: 100%; height: 100%; display: block; }
+  .modal-body { padding: 1.75rem 2rem 2rem; }
+  .modal-eyebrow {
+    font-size: 0.7rem; font-weight: 500; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem;
+  }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; color: var(--deep); margin-bottom: 0.4rem;
+  }
+  .modal-rating {
+    display: flex; align-items: center; gap: 0.3rem;
+    font-size: 0.85rem; color: var(--deep); font-weight: 500;
+    margin-bottom: 1.25rem;
+  }
+  .modal-rating .star { color: var(--gold); }
+  .modal-desc {
+    font-size: 0.92rem; line-height: 1.7; color: #555;
+    font-weight: 300; margin-bottom: 1.5rem;
+  }
+  .modal-details {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem; margin-bottom: 1.5rem;
+  }
+  .modal-detail {
+    background: var(--sand); border-radius: 12px;
+    padding: 0.75rem 1rem; text-align: center;
+  }
+  .modal-detail-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; color: var(--deep);
+    display: block; margin-bottom: 0.15rem;
+  }
+  .modal-detail-label {
+    font-size: 0.7rem; color: var(--muted); font-weight: 500;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .modal-tags {
+    display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.75rem;
+  }
+  .modal-tag {
+    background: var(--foam); color: var(--sea);
+    padding: 0.3rem 0.8rem; border-radius: 100px;
+    font-size: 0.78rem; font-weight: 500;
+  }
+  .modal-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 1.25rem;
+    border-top: 1px solid #F0EDE8;
+  }
+  .modal-price-block .modal-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; color: var(--deep);
+  }
+  .modal-price-block .modal-price span {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem; font-weight: 300; color: var(--muted);
+  }
+  .modal-price-block small { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 0.1rem; }
+  .btn-book {
+    background: var(--deep); color: white;
+    padding: 0.8rem 2rem; border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 500;
+    border: none; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-book:hover { background: var(--sea); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .layout { flex-direction: column; height: auto; }
+    .map-pane { position: relative; top: 0; width: 100%; height: 320px; }
+    .listings-pane { padding: 1rem; }
+    .listings-grid { grid-template-columns: 1fr; }
+    nav { padding: 0 1.5rem; }
+    .filter-bar { padding: 0 1rem; flex-wrap: wrap; gap: 0.4rem; height: auto; padding-top: 0.5rem; padding-bottom: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="website.html" class="nav-logo">Pastore<span> Real Estate</span></a>
+  <ul class="nav-links">
+    <li><a href="rentals.html" class="active">Rentals</a></li>
+    <li><a href="owners.html">For Owners</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html" class="nav-cta">Get in Touch</a></li>
+  </ul>
+</nav>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-input">
+    <span style="color:var(--muted);font-size:0.9rem">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search by name or area…">
+  </div>
+  <select class="filter-select" id="sizeFilter">
+    <option value="">Any size</option>
+    <option value="1">Studio / 1 bed</option>
+    <option value="2">2 bedrooms</option>
+    <option value="3">3 bedrooms</option>
+    <option value="4">4+ bedrooms</option>
+  </select>
+  <div class="price-range">
+    <span class="price-range-label">€</span>
+    <input type="number" class="price-input" id="priceMin" placeholder="Min" min="0" step="100">
+    <span class="price-range-sep">–</span>
+    <input type="number" class="price-input" id="priceMax" placeholder="Max" min="0" step="100">
+    <span class="price-range-label">/ wk</span>
+  </div>
+  <div class="amenity-dropdown" id="amenityDropdown">
+    <div class="amenity-trigger" id="amenityTrigger">
+      <span id="amenityLabel">Amenities</span>
+      <span class="trigger-arrow">▼</span>
+    </div>
+    <div class="amenity-panel" id="amenityPanel">
+      <label class="amenity-option"><input type="checkbox" value="Pool"> <span>🏊 Pool</span></label>
+      <label class="amenity-option"><input type="checkbox" value="Sea view"> <span>🌊 Sea view</span></label>
+      <label class="amenity-option"><input type="checkbox" value="Beach access"> <span>🏖️ Beach access</span></label>
+      <label class="amenity-option"><input type="checkbox" value="Garden"> <span>🌿 Garden</span></label>
+      <label class="amenity-option"><input type="checkbox" value="Parking"> <span>🅿️ Parking</span></label>
+      <label class="amenity-option"><input type="checkbox" value="Pets ok"> <span>🐾 Pets ok</span></label>
+      <div class="amenity-divider"></div>
+      <div class="amenity-clear-row">
+        <button class="amenity-clear-link" id="amenityClear">Clear amenities</button>
+      </div>
+    </div>
+  </div>
+  <button class="filter-btn" id="clearBtn">Clear filters</button>
+  <span class="results-count" id="resultsCount"></span>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="layout">
+
+  <!-- MAP -->
+  <div class="map-pane">
+    <div id="map"></div>
+  </div>
+
+  <!-- LISTINGS -->
+  <div class="listings-pane" id="listingPane">
+    <div class="listings-header">
+      <h1 class="listings-title">Properties in Forte dei Marmi</h1>
+      <select class="sort-select" id="sortSelect">
+        <option value="default">Sort: Featured</option>
+        <option value="price-asc">Price: low to high</option>
+        <option value="price-desc">Price: high to low</option>
+        <option value="rating">Top rated</option>
+      </select>
+    </div>
+
+    <div class="listings-grid" id="listingsGrid">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="modal-img" id="modalImg"></div>
+    <div class="modal-body">
+      <p class="modal-eyebrow" id="modalEyebrow"></p>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <div class="modal-rating" id="modalRating"></div>
+      <p class="modal-desc" id="modalDesc"></p>
+      <div class="modal-details" id="modalDetails"></div>
+      <div class="modal-tags" id="modalTags"></div>
+      <div class="modal-footer">
+        <div class="modal-price-block">
+          <div class="modal-price" id="modalPrice"></div>
+          <small>Minimum 7-night stay · Prices excl. cleaning fee</small>
+        </div>
+        <button class="btn-book" id="modalBook">Request booking</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ── DATA ──────────────────────────────────────────────
+const properties = [
+  {
+    id: 1,
+    name: "Villa delle Mimose",
+    location: "Centro",
+    distance: "600m from beach",
+    type: "Villa",
+    beds: 3,
+    baths: 2,
+    guests: 6,
+    price: 2400,
+    rating: 4.9,
+    reviews: 18,
+    tags: ["Pool", "Garden", "Parking"],
+    desc: "A classic Versilian villa tucked in the quiet centre of Forte dei Marmi. Surrounded by lush mimosa trees, the property features a private pool, mature garden and easy walk to the beach and restaurants.",
+    lat: 43.9605, lng: 10.1672,
+    svg: `<svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="mg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#D4E8F0"/><stop offset="100%" stop-color="#A8C8DF"/></linearGradient></defs><rect width="360" height="200" fill="url(#mg1)"/><rect x="60" y="80" width="240" height="90" fill="#F5E6C8" rx="2"/><polygon points="50,82 180,30 310,82" fill="#C47050"/><rect x="90" y="100" width="28" height="32" fill="#7AABCC" rx="1"/><rect x="166" y="100" width="28" height="32" fill="#7AABCC" rx="1"/><rect x="242" y="100" width="28" height="32" fill="#7AABCC" rx="1"/><rect x="155" y="135" width="50" height="35" fill="#9B6B3A" rx="2"/><ellipse cx="50" cy="160" rx="40" ry="50" fill="#5A8A4A"/><ellipse cx="310" cy="155" rx="35" ry="45" fill="#4A7A3A"/><rect y="180" width="360" height="20" fill="#C8B89A"/><rect x="100" y="155" width="160" height="8" rx="2" fill="#5AAECF" opacity="0.7"/></svg>`
+  },
+  {
+    id: 2,
+    name: "Appartamento Azzurro",
+    location: "Vittoria",
+    distance: "150m from beach",
+    type: "Apartment",
+    beds: 2,
+    baths: 1,
+    guests: 4,
+    price: 1600,
+    rating: 4.7,
+    reviews: 11,
+    tags: ["Sea view", "Beach access"],
+    desc: "Light-filled top-floor apartment steps from the sea. A wide terrace with sea views makes this one of the most sought-after short stays in the Vittoria neighbourhood.",
+    lat: 43.9572, lng: 10.1725,
+    svg: `<svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg"><rect width="360" height="200" fill="#E8D5B8"/><rect y="150" width="360" height="50" fill="#B8D0D8"/><rect x="80" y="50" width="200" height="110" fill="#EADCC0" rx="2"/><rect x="80" y="50" width="200" height="25" fill="#D4956A"/><rect x="100" y="80" width="40" height="50" fill="#8ABCCF" rx="1" opacity="0.8"/><rect x="160" y="80" width="40" height="50" fill="#8ABCCF" rx="1" opacity="0.8"/><rect x="220" y="80" width="40" height="50" fill="#8ABCCF" rx="1" opacity="0.8"/><rect x="155" y="130" width="50" height="30" fill="#A07040" rx="2"/><rect x="80" y="72" width="200" height="5" fill="#C0956A"/><line x1="95" y1="52" x2="95" y2="72" stroke="#B08060" stroke-width="2"/><line x1="125" y1="52" x2="125" y2="72" stroke="#B08060" stroke-width="2"/><line x1="185" y1="52" x2="185" y2="72" stroke="#B08060" stroke-width="2"/><line x1="245" y1="52" x2="245" y2="72" stroke="#B08060" stroke-width="2"/><polygon points="20,60 40,130 0,130" fill="#3A6A2A"/><polygon points="335,55 358,130 312,130" fill="#4A7A3A"/></svg>`
+  },
+  {
+    id: 3,
+    name: "Casa Ulivo Bianco",
+    location: "Spiaggia di Levante",
+    distance: "400m from beach",
+    type: "Villa",
+    beds: 2,
+    baths: 2,
+    guests: 4,
+    price: 1950,
+    rating: 5.0,
+    reviews: 7,
+    tags: ["Pool", "Garden", "Pets ok"],
+    desc: "A modern white villa framed by century-old olive trees. South-facing garden, private pool and a peaceful residential street make this a favourite for families with dogs.",
+    lat: 43.9548, lng: 10.1755,
+    svg: `<svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="mg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#C8E0C0"/><stop offset="100%" stop-color="#A0C890"/></linearGradient></defs><rect width="360" height="200" fill="url(#mg3)"/><rect y="170" width="360" height="30" fill="#8AB890"/><rect x="70" y="70" width="220" height="100" fill="#F8F2E8" rx="3"/><rect x="70" y="70" width="220" height="18" fill="#E0D0B0"/><rect x="85" y="82" width="60" height="55" fill="#90C0D8" rx="1" opacity="0.85"/><rect x="150" y="82" width="60" height="55" fill="#90C0D8" rx="1" opacity="0.85"/><rect x="215" y="82" width="60" height="55" fill="#90C0D8" rx="1" opacity="0.85"/><rect x="155" y="140" width="50" height="30" fill="#4A6A4A" rx="1"/><ellipse cx="180" cy="185" rx="70" ry="10" fill="#5AAECF" opacity="0.8"/><rect x="30" y="100" width="6" height="70" fill="#6B4A20"/><ellipse cx="33" cy="90" rx="18" ry="28" fill="#4A8A3A"/><rect x="320" y="110" width="6" height="60" fill="#6B4A20"/><ellipse cx="323" cy="98" rx="16" ry="26" fill="#5A9A4A"/></svg>`
+  },
+  {
+    id: 4,
+    name: "Villa Rosa dei Venti",
+    location: "Nord — Ponente",
+    distance: "300m from beach",
+    type: "Villa",
+    beds: 4,
+    baths: 3,
+    guests: 8,
+    price: 3800,
+    rating: 4.8,
+    reviews: 22,
+    tags: ["Pool", "Garden", "Parking", "Sea view"],
+    desc: "One of our flagship properties — a grand pink villa with sea glimpses, a heated pool and generous indoor-outdoor living. Ideal for larger families or two couples sharing.",
+    lat: 43.9635, lng: 10.1650,
+    svg: `<svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="mg4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F0D8E0"/><stop offset="100%" stop-color="#D8B0C0"/></linearGradient></defs><rect width="360" height="200" fill="url(#mg4)"/><rect x="40" y="60" width="280" height="110" fill="#F9EEF2" rx="2"/><polygon points="30,62 180,15 330,62" fill="#D4807A"/><rect x="70" y="85" width="35" height="40" fill="#9ABCCC" rx="1"/><rect x="160" y="85" width="40" height="40" fill="#9ABCCC" rx="1"/><rect x="255" y="85" width="35" height="40" fill="#9ABCCC" rx="1"/><rect x="155" y="140" width="50" height="30" fill="#A06858" rx="2"/><ellipse cx="100" cy="178" rx="55" ry="12" fill="#5AAECF" opacity="0.7"/><rect x="25" y="115" width="8" height="55" fill="#8B6340"/><ellipse cx="29" cy="105" rx="22" ry="32" fill="#5A8A3A"/><rect x="328" y="120" width="8" height="50" fill="#8B6340"/><ellipse cx="332" cy="110" rx="18" ry="28" fill="#4A7A2A"/><rect y="185" width="360" height="15" fill="#C8B890"/></svg>`
+  },
+  {
+    id: 5,
+    name: "Appartamento La Pergola",
+    location: "Centro Storico",
+    distance: "800m from beach",
+    type: "Apartment",
+    beds: 1,
+    baths: 1,
+    guests: 2,
+    price: 980,
+    rating: 4.6,
+    reviews: 9,
+    tags: ["Garden", "Parking"],
+    desc: "A charming ground-floor apartment with a private wisteria-draped pergola. Quiet courtyard setting in the historic centre — perfect for a romantic getaway or solo traveller.",
+    lat: 43.9618, lng: 10.1695,
+    svg: `<svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg"><rect width="360" height="200" fill="#E0D4C0"/><rect x="90" y="60" width="180" height="110" fill="#F2EAD8" rx="2"/><rect x="90" y="58" width="180" height="20" fill="#B8906A"/><rect x="110" y="82" width="45" height="50" fill="#8AACBE" rx="1"/><rect x="205" y="82" width="45" height="50" fill="#8AACBE" rx="1"/><rect x="155" y="130" width="50" height="40" fill="#A07848" rx="2"/><rect x="50" y="80" width="50" height="6" rx="2" fill="#8B6B40" opacity="0.7"/><rect x="260" y="80" width="50" height="6" rx="2" fill="#8B6B40" opacity="0.7"/><ellipse cx="75" cy="80" rx="30" ry="20" fill="#6A9A5A" opacity="0.8"/><ellipse cx="285" cy="80" rx="28" ry="18" fill="#5A8A4A" opacity="0.8"/><rect y="175" width="360" height="25" fill="#C8B090"/></svg>`
+  },
+  {
+    id: 6,
+    name: "Villa Serena",
+    location: "Spiaggia di Levante",
+    distance: "200m from beach",
+    type: "Villa",
+    beds: 3,
+    baths: 2,
+    guests: 6,
+    price: 2750,
+    rating: 4.9,
+    reviews: 14,
+    tags: ["Pool", "Sea view", "Beach access", "Parking"],
+    desc: "Just two minutes from the sea, Villa Serena combines barefoot ease with genuine style. The pool overlooks a manicured garden and the terrace catches the evening breeze off the water.",
+    lat: 43.9555, lng: 10.1740,
+    svg: `<svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="mg6" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C8E0EE"/><stop offset="100%" stop-color="#90C0D8"/></linearGradient></defs><rect width="360" height="200" fill="url(#mg6)"/><rect y="165" width="360" height="35" fill="#4A9EBF" opacity="0.5"/><rect x="55" y="70" width="250" height="100" fill="#F5EFE0" rx="3"/><rect x="55" y="68" width="250" height="16" fill="#C0A870"/><rect x="80" y="88" width="40" height="45" fill="#7AABCC" rx="1"/><rect x="160" y="88" width="40" height="45" fill="#7AABCC" rx="1"/><rect x="240" y="88" width="40" height="45" fill="#7AABCC" rx="1"/><rect x="155" y="145" width="50" height="25" fill="#8B6030" rx="2"/><ellipse cx="180" cy="180" rx="80" ry="12" fill="#5AAECF" opacity="0.75"/><rect x="20" y="110" width="7" height="60" fill="#7A5A28"/><ellipse cx="24" cy="100" rx="20" ry="30" fill="#4A8A3A"/><rect x="333" y="115" width="7" height="55" fill="#7A5A28"/><ellipse cx="337" cy="105" rx="18" ry="28" fill="#5A9A4A"/></svg>`
+  },
+  {
+    id: 7,
+    name: "Casa dei Limoni",
+    location: "Vittoria",
+    distance: "250m from beach",
+    type: "Apartment",
+    beds: 2,
+    baths: 1,
+    guests: 4,
+    price: 1350,
+    rating: 4.5,
+    reviews: 16,
+    tags: ["Garden", "Parking"],
+    desc: "Bright and simply furnished, this apartment opens onto a private lemon-tree garden. A relaxed, no-fuss base with all the essentials and a sunny outdoor table for long breakfasts.",
+    lat: 43.9580, lng: 10.1708,
+    svg: `<svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg"><rect width="360" height="200" fill="#E8F0D8"/><rect x="80" y="65" width="200" height="105" fill="#F5F0E0" rx="2"/><rect x="80" y="63" width="200" height="18" fill="#C8B860"/><rect x="100" y="88" width="38" height="42" fill="#8ABCCC" rx="1"/><rect x="164" y="88" width="38" height="42" fill="#8ABCCC" rx="1"/><rect x="228" y="88" width="38" height="42" fill="#8ABCCC" rx="1"/><rect x="155" y="135" width="50" height="35" fill="#9B7A38" rx="2"/><ellipse cx="60" cy="140" rx="35" ry="28" fill="#6A9A2A" opacity="0.9"/><ellipse cx="300" cy="145" rx="32" ry="26" fill="#5A8A2A" opacity="0.9"/><ellipse cx="60" cy="128" rx="12" ry="10" fill="#FFE066" opacity="0.8"/><ellipse cx="295" cy="132" rx="10" ry="9" fill="#FFE066" opacity="0.8"/><rect y="180" width="360" height="20" fill="#C8C890"/></svg>`
+  },
+  {
+    id: 8,
+    name: "Villa del Pino",
+    location: "Nord — Levante",
+    distance: "500m from beach",
+    type: "Villa",
+    beds: 4,
+    baths: 3,
+    guests: 8,
+    price: 3200,
+    rating: 4.7,
+    reviews: 19,
+    tags: ["Pool", "Garden", "Parking", "Pets ok"],
+    desc: "Set beneath towering pines in the quietest corner of Forte dei Marmi, this villa delivers total privacy. Generous spaces inside and out — perfect for families who want room to breathe.",
+    lat: 43.9625, lng: 10.1720,
+    svg: `<svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="mg8" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#D0E8D0"/><stop offset="100%" stop-color="#A8C8A0"/></linearGradient></defs><rect width="360" height="200" fill="url(#mg8)"/><rect x="50" y="75" width="260" height="100" fill="#F8F2E5" rx="2"/><polygon points="40,77 180,28 320,77" fill="#8B6B40"/><rect x="75" y="98" width="35" height="38" fill="#7AABCC" rx="1"/><rect x="162" y="98" width="36" height="38" fill="#7AABCC" rx="1"/><rect x="250" y="98" width="35" height="38" fill="#7AABCC" rx="1"/><rect x="158" y="145" width="44" height="30" fill="#9B6B3A" rx="2"/><rect y="180" width="360" height="20" fill="#A8C890"/><polygon points="10,70 35,170 -15,170" fill="#2A5A1A" opacity="0.85"/><polygon points="330,65 358,170 302,170" fill="#3A6A2A" opacity="0.85"/><ellipse cx="130" cy="185" rx="60" ry="10" fill="#5AAECF" opacity="0.65"/></svg>`
+  }
+];
+
+// ── MAP SETUP ─────────────────────────────────────────
+const map = L.map('map', {
+  center: [43.9590, 10.1700],
+  zoom: 14,
+  zoomControl: true,
+  scrollWheelZoom: true
+});
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  maxZoom: 19
+}).addTo(map);
+
+// Custom map markers
+const markers = {};
+properties.forEach(p => {
+  const icon = L.divIcon({
+    className: 'price-marker-wrap',
+    html: `<div class="price-marker" id="marker-${p.id}">€${(p.price/1000).toFixed(1)}k</div>`,
+    iconSize: [1, 1],
+    iconAnchor: [0, 0]
+  });
+  const marker = L.marker([p.lat, p.lng], { icon }).addTo(map);
+  marker.on('click', () => openModal(p.id));
+  markers[p.id] = marker;
+});
+
+// ── STATE ─────────────────────────────────────────────
+let activeFilters = { search: '', size: '', priceMin: '', priceMax: '', amenities: [] };
+let sortMode = 'default';
+let visibleIds = properties.map(p => p.id);
+
+// ── RENDER ────────────────────────────────────────────
+function renderCards(list) {
+  const grid = document.getElementById('listingsGrid');
+  document.getElementById('resultsCount').textContent =
+    list.length === properties.length ? `${list.length} properties` : `${list.length} of ${properties.length} properties`;
+
+  if (list.length === 0) {
+    grid.innerHTML = `<div class="no-results"><span style="font-size:2rem">🔍</span><p>No properties match your filters.</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = list.map(p => `
+    <div class="prop-card" data-id="${p.id}" id="card-${p.id}">
+      <div class="prop-img">
+        ${p.svg}
+        <span class="prop-badge">${p.type} · ${p.beds} bed${p.beds > 1 ? 's' : ''}</span>
+        <div class="prop-fav" data-id="${p.id}">♡</div>
+      </div>
+      <div class="prop-body">
+        <p class="prop-location">${p.location} · ${p.distance}</p>
+        <h3 class="prop-name">${p.name}</h3>
+        <div class="prop-tags">${p.tags.map(t => `<span class="prop-tag">${tagIcon(t)} ${t}</span>`).join('')}</div>
+        <div class="prop-footer">
+          <div class="prop-price">€${p.price.toLocaleString()} <span>/ week</span></div>
+          <div class="prop-rating"><span class="star">★</span> ${p.rating} <span style="color:var(--muted);font-weight:300">(${p.reviews})</span></div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Card click → modal
+  grid.querySelectorAll('.prop-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      if (e.target.classList.contains('prop-fav')) return;
+      openModal(parseInt(card.dataset.id));
+    });
+  });
+
+  // Favourite toggle
+  grid.querySelectorAll('.prop-fav').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      btn.textContent = btn.textContent === '♡' ? '❤️' : '♡';
+    });
+  });
+
+  // Hover sync with map
+  grid.querySelectorAll('.prop-card').forEach(card => {
+    const id = parseInt(card.dataset.id);
+    card.addEventListener('mouseenter', () => highlightMarker(id, true));
+    card.addEventListener('mouseleave', () => highlightMarker(id, false));
+  });
+
+  visibleIds = list.map(p => p.id);
+  updateMapMarkers(list);
+}
+
+function tagIcon(tag) {
+  const icons = { 'Pool': '🏊', 'Garden': '🌿', 'Parking': '🅿️', 'Sea view': '🌊', 'Beach access': '🏖️', 'Pets ok': '🐾' };
+  return icons[tag] || '';
+}
+
+function updateMapMarkers(list) {
+  const visSet = new Set(list.map(p => p.id));
+  properties.forEach(p => {
+    const el = document.getElementById(`marker-${p.id}`);
+    if (el) {
+      el.style.opacity = visSet.has(p.id) ? '1' : '0.25';
+    }
+  });
+}
+
+function highlightMarker(id, on) {
+  const el = document.getElementById(`marker-${id}`);
+  if (el) el.classList.toggle('hovered', on);
+  const card = document.getElementById(`card-${id}`);
+  if (card) card.classList.toggle('hovered', on);
+}
+
+// ── FILTER + SORT ─────────────────────────────────────
+function applyFilters() {
+  let list = [...properties];
+
+  if (activeFilters.search) {
+    const q = activeFilters.search.toLowerCase();
+    list = list.filter(p =>
+      p.name.toLowerCase().includes(q) || p.location.toLowerCase().includes(q)
+    );
+  }
+  if (activeFilters.size) {
+    const s = parseInt(activeFilters.size);
+    if (s === 4) list = list.filter(p => p.beds >= 4);
+    else list = list.filter(p => p.beds === s);
+  }
+  if (activeFilters.priceMin !== '') {
+    list = list.filter(p => p.price >= parseInt(activeFilters.priceMin));
+  }
+  if (activeFilters.priceMax !== '') {
+    list = list.filter(p => p.price <= parseInt(activeFilters.priceMax));
+  }
+  if (activeFilters.amenities.length > 0) {
+    list = list.filter(p => activeFilters.amenities.every(a => p.tags.includes(a)));
+  }
+
+  if (sortMode === 'price-asc') list.sort((a, b) => a.price - b.price);
+  else if (sortMode === 'price-desc') list.sort((a, b) => b.price - a.price);
+  else if (sortMode === 'rating') list.sort((a, b) => b.rating - a.rating);
+
+  renderCards(list);
+}
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  activeFilters.search = e.target.value.trim();
+  applyFilters();
+});
+document.getElementById('sizeFilter').addEventListener('change', e => {
+  activeFilters.size = e.target.value;
+  applyFilters();
+});
+document.getElementById('priceMin').addEventListener('input', e => {
+  activeFilters.priceMin = e.target.value.trim();
+  applyFilters();
+});
+document.getElementById('priceMax').addEventListener('input', e => {
+  activeFilters.priceMax = e.target.value.trim();
+  applyFilters();
+});
+// ── AMENITY CHECKBOX DROPDOWN ─────────────────────────
+const amenityTrigger = document.getElementById('amenityTrigger');
+const amenityPanel   = document.getElementById('amenityPanel');
+const amenityCheckboxes = amenityPanel.querySelectorAll('input[type="checkbox"]');
+
+function updateAmenityTrigger() {
+  const count = activeFilters.amenities.length;
+  const label = document.getElementById('amenityLabel');
+  if (count === 0) {
+    label.textContent = 'Amenities';
+    amenityTrigger.classList.remove('has-selection');
+    // remove badge if any
+    const badge = amenityTrigger.querySelector('.amenity-badge');
+    if (badge) badge.remove();
+  } else {
+    label.textContent = 'Amenities';
+    amenityTrigger.classList.add('has-selection');
+    let badge = amenityTrigger.querySelector('.amenity-badge');
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'amenity-badge';
+      amenityTrigger.insertBefore(badge, amenityTrigger.querySelector('.trigger-arrow'));
+    }
+    badge.textContent = count;
+  }
+}
+
+amenityTrigger.addEventListener('click', e => {
+  e.stopPropagation();
+  const isOpen = amenityPanel.classList.toggle('open');
+  amenityTrigger.classList.toggle('open', isOpen);
+  amenityTrigger.classList.toggle('active', isOpen);
+});
+
+amenityCheckboxes.forEach(cb => {
+  cb.addEventListener('change', () => {
+    activeFilters.amenities = Array.from(amenityCheckboxes)
+      .filter(c => c.checked).map(c => c.value);
+    updateAmenityTrigger();
+    applyFilters();
+  });
+});
+
+document.getElementById('amenityClear').addEventListener('click', e => {
+  e.stopPropagation();
+  amenityCheckboxes.forEach(cb => cb.checked = false);
+  activeFilters.amenities = [];
+  updateAmenityTrigger();
+  applyFilters();
+});
+
+// Close dropdown on outside click
+document.addEventListener('click', e => {
+  if (!document.getElementById('amenityDropdown').contains(e.target)) {
+    amenityPanel.classList.remove('open');
+    amenityTrigger.classList.remove('open', 'active');
+  }
+});
+document.getElementById('sortSelect').addEventListener('change', e => {
+  sortMode = e.target.value;
+  applyFilters();
+});
+document.getElementById('clearBtn').addEventListener('click', () => {
+  activeFilters = { search: '', size: '', priceMin: '', priceMax: '', amenities: [] };
+  sortMode = 'default';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('sizeFilter').value = '';
+  document.getElementById('priceMin').value = '';
+  document.getElementById('priceMax').value = '';
+  document.getElementById('sortSelect').value = 'default';
+  amenityCheckboxes.forEach(cb => cb.checked = false);
+  updateAmenityTrigger();
+  applyFilters();
+});
+
+// ── MODAL ─────────────────────────────────────────────
+function openModal(id) {
+  const p = properties.find(x => x.id === id);
+  if (!p) return;
+
+  document.getElementById('modalImg').innerHTML = p.svg;
+  document.getElementById('modalEyebrow').textContent = `${p.location} · ${p.distance}`;
+  document.getElementById('modalTitle').textContent = p.name;
+  document.getElementById('modalRating').innerHTML =
+    `<span class="star">★</span> ${p.rating} &nbsp;<span style="color:var(--muted);font-weight:300">(${p.reviews} reviews)</span>`;
+  document.getElementById('modalDesc').textContent = p.desc;
+  document.getElementById('modalDetails').innerHTML = `
+    <div class="modal-detail"><span class="modal-detail-val">${p.beds}</span><span class="modal-detail-label">Bedrooms</span></div>
+    <div class="modal-detail"><span class="modal-detail-val">${p.baths}</span><span class="modal-detail-label">Bathrooms</span></div>
+    <div class="modal-detail"><span class="modal-detail-val">${p.guests}</span><span class="modal-detail-label">Guests</span></div>
+  `;
+  document.getElementById('modalTags').innerHTML =
+    p.tags.map(t => `<span class="modal-tag">${tagIcon(t)} ${t}</span>`).join('');
+  document.getElementById('modalPrice').innerHTML =
+    `€${p.price.toLocaleString()} <span>/ week</span>`;
+
+  document.getElementById('modalOverlay').classList.add('open');
+
+  // Pan map to property
+  map.flyTo([p.lat, p.lng], 15, { duration: 0.8 });
+  Object.values(markers).forEach(m => {
+    const el = m.getElement()?.querySelector('.price-marker');
+    if (el) el.classList.remove('active');
+  });
+  const activeEl = document.getElementById(`marker-${id}`);
+  if (activeEl) activeEl.classList.add('active');
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.querySelectorAll('.price-marker').forEach(el => el.classList.remove('active'));
+}
+
+document.getElementById('modalBook').addEventListener('click', () => {
+  alert('Booking request sent! Our team will be in touch within 24 hours.');
+  closeModal();
+});
+
+// ── INIT ──────────────────────────────────────────────
+applyFilters();
+</script>
+</body>
+</html>

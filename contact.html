@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get in Touch — Pastore Real Estate</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sand: #F5F0E8;
+    --deep: #1A2B3C;
+    --sea: #2D6A8F;
+    --sea-light: #4A8FB5;
+    --foam: #E8F4F8;
+    --gold: #C9A96E;
+    --text: #2A2A2A;
+    --muted: #8A8A8A;
+    --nav-h: 68px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--sand);
+    color: var(--text);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 4rem;
+    background: rgba(245,240,232,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(201,169,110,0.2);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; color: var(--deep);
+    letter-spacing: 0.01em; text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--deep);
+    font-size: 0.875rem; font-weight: 400; letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--sea); }
+  .nav-links a.active { color: var(--sea); }
+  .nav-cta {
+    background: var(--deep); color: white !important;
+    padding: 0.55rem 1.4rem; border-radius: 100px;
+    font-size: 0.85rem !important;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover,
+  .nav-cta.active { background: var(--sea) !important; color: white !important; }
+
+  /* ── LAYOUT ── */
+  .page-wrap {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 42% 58%;
+  }
+
+  /* ── LEFT PANEL ── */
+  .left-panel {
+    background: var(--deep);
+    padding: calc(var(--nav-h) + 4rem) 3.5rem 4rem;
+    display: flex; flex-direction: column;
+    position: sticky; top: 0; height: 100vh;
+    overflow: hidden;
+  }
+  .left-panel::before {
+    content: '';
+    position: absolute; top: -80px; right: -80px;
+    width: 260px; height: 260px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(45,106,143,0.4) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .left-panel::after {
+    content: '';
+    position: absolute; bottom: -60px; left: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,169,110,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .left-inner { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; }
+
+  .eyebrow {
+    font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1.25rem; display: block;
+  }
+  .left-panel h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 2.8vw, 2.8rem);
+    line-height: 1.15; color: #fff;
+    margin-bottom: 1.25rem;
+  }
+  .left-panel h1 em { font-style: italic; color: var(--gold); }
+  .left-panel > .left-inner > p {
+    font-size: 1rem; line-height: 1.75;
+    color: rgba(255,255,255,0.55); font-weight: 300;
+    margin-bottom: 3rem; max-width: 340px;
+  }
+
+  /* contact detail items */
+  .contact-details { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: auto; }
+  .contact-item { display: flex; align-items: center; gap: 1rem; }
+  .contact-item-icon {
+    width: 40px; height: 40px; flex-shrink: 0;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+  }
+  .contact-item-text span {
+    display: block; font-size: 0.7rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.35); margin-bottom: 0.15rem;
+  }
+  .contact-item-text a,
+  .contact-item-text p {
+    font-size: 0.9rem; color: rgba(255,255,255,0.75);
+    text-decoration: none; font-weight: 300;
+    transition: color 0.2s;
+  }
+  .contact-item-text a:hover { color: var(--gold); }
+
+  /* response time badge */
+  .response-badge {
+    margin-top: 2.5rem;
+    background: rgba(45,106,143,0.25);
+    border: 1px solid rgba(45,106,143,0.4);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    display: flex; gap: 0.75rem; align-items: center;
+  }
+  .response-badge span:first-child { font-size: 1.2rem; }
+  .response-badge p {
+    font-size: 0.82rem; color: rgba(255,255,255,0.6);
+    line-height: 1.5; font-weight: 300;
+  }
+  .response-badge strong { color: rgba(255,255,255,0.85); font-weight: 500; }
+
+  /* ── RIGHT PANEL ── */
+  .right-panel {
+    background: var(--sand);
+    padding: calc(var(--nav-h) + 4rem) 4.5rem 4rem;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+
+  .form-card {
+    background: #fff;
+    border-radius: 24px;
+    padding: 3rem 3rem;
+    box-shadow: 0 4px 40px rgba(26,43,60,0.08);
+    border: 1px solid rgba(201,169,110,0.15);
+    max-width: 560px;
+  }
+
+  .form-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.65rem; color: var(--deep);
+    margin-bottom: 0.5rem;
+  }
+  .form-card > p {
+    font-size: 0.9rem; color: var(--muted);
+    font-weight: 300; margin-bottom: 2.25rem;
+    line-height: 1.6;
+  }
+
+  /* form fields */
+  .form-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1rem; margin-bottom: 1rem;
+  }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label {
+    display: block; font-size: 0.78rem; font-weight: 500;
+    color: var(--deep); letter-spacing: 0.04em;
+    text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    background: var(--sand);
+    border: 1.5px solid rgba(201,169,110,0.3);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; color: var(--text);
+    font-weight: 300;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    resize: none;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--sea);
+    box-shadow: 0 0 0 3px rgba(45,106,143,0.1);
+    background: #fff;
+  }
+  .form-group input.error,
+  .form-group textarea.error {
+    border-color: #e05252;
+    box-shadow: 0 0 0 3px rgba(224,82,82,0.1);
+  }
+  .form-group textarea { min-height: 120px; }
+
+  /* enquiry type toggle */
+  .enquiry-toggle {
+    display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;
+  }
+  .eq-btn {
+    flex: 1; min-width: 100px;
+    padding: 0.6rem 0.9rem; border-radius: 8px;
+    border: 1.5px solid rgba(201,169,110,0.3);
+    background: var(--sand); color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 400;
+    cursor: pointer; transition: all 0.2s;
+    text-align: center;
+  }
+  .eq-btn:hover { border-color: var(--sea); color: var(--sea); }
+  .eq-btn.selected {
+    background: var(--sea); border-color: var(--sea);
+    color: #fff; font-weight: 500;
+  }
+
+  /* submit */
+  .btn-submit {
+    width: 100%; padding: 1rem;
+    background: var(--deep); color: #fff;
+    border: none; border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; font-weight: 500;
+    cursor: pointer; transition: background 0.2s;
+    margin-top: 0.5rem; position: relative;
+  }
+  .btn-submit:hover { background: var(--sea); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-submit .spinner {
+    display: inline-block; width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff; border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle; margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* privacy note */
+  .privacy-note {
+    font-size: 0.78rem; color: var(--muted);
+    text-align: center; margin-top: 1rem;
+    line-height: 1.6; font-weight: 300;
+  }
+
+  /* ── SUCCESS STATE ── */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 2rem 0;
+  }
+  .success-screen.show { display: block; }
+  .success-circle {
+    width: 72px; height: 72px;
+    background: #e8f5e9; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; margin: 0 auto 1.5rem;
+  }
+  .success-screen h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; color: var(--deep);
+    margin-bottom: 0.75rem;
+  }
+  .success-screen p {
+    font-size: 0.9rem; color: var(--muted);
+    font-weight: 300; line-height: 1.7;
+    margin-bottom: 2rem; max-width: 340px; margin-left: auto; margin-right: auto;
+  }
+  .success-links { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+  .success-links a {
+    padding: 0.7rem 1.5rem; border-radius: 100px;
+    font-size: 0.875rem; text-decoration: none;
+    transition: all 0.2s;
+  }
+  .link-primary {
+    background: var(--deep); color: #fff;
+  }
+  .link-primary:hover { background: var(--sea); }
+  .link-outline {
+    border: 1.5px solid rgba(26,43,60,0.2);
+    color: var(--deep);
+  }
+  .link-outline:hover { border-color: var(--sea); color: var(--sea); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 2rem; }
+    .page-wrap { grid-template-columns: 1fr; }
+    .left-panel {
+      position: relative; height: auto;
+      padding: calc(var(--nav-h) + 3rem) 2rem 3rem;
+    }
+    .right-panel { padding: 3rem 2rem 4rem; }
+    .form-card { padding: 2rem 1.5rem; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <a href="website.html" class="nav-logo">Pastore<span> Real Estate</span></a>
+  <ul class="nav-links">
+    <li><a href="rentals.html">Rentals</a></li>
+    <li><a href="owners.html">For Owners</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html" class="nav-cta active">Get in Touch</a></li>
+  </ul>
+</nav>
+
+<!-- ══ SPLIT LAYOUT ══ -->
+<div class="page-wrap">
+
+  <!-- LEFT: brand + contact info -->
+  <div class="left-panel">
+    <div class="left-inner">
+      <span class="eyebrow">Contact us</span>
+      <h1>Let's talk about<br><em>your property.</em></h1>
+      <p>Whether you own a villa in Forte dei Marmi, you're planning a holiday, or you just want to know more — we'd love to hear from you.</p>
+
+      <div class="contact-details">
+        <div class="contact-item">
+          <div class="contact-item-icon">✉️</div>
+          <div class="contact-item-text">
+            <span>Email</span>
+            <a href="mailto:info@pastore.it">info@pastore.it</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">📞</div>
+          <div class="contact-item-text">
+            <span>Phone</span>
+            <a href="tel:+390584000000">+39 0584 000 000</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">💬</div>
+          <div class="contact-item-text">
+            <span>WhatsApp</span>
+            <a href="#">Message us on WhatsApp</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">📍</div>
+          <div class="contact-item-text">
+            <span>Office</span>
+            <p>Forte dei Marmi, Lucca, Tuscany</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">📸</div>
+          <div class="contact-item-text">
+            <span>Instagram</span>
+            <a href="#">@pastorerealestate</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="response-badge">
+        <span>⚡</span>
+        <p><strong>We reply within 24 hours.</strong><br>Usually much sooner — we're based in Forte dei Marmi and available 7 days a week.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: form -->
+  <div class="right-panel">
+    <div class="form-card">
+
+      <!-- Form -->
+      <div id="formWrap">
+        <h2>Send us a message</h2>
+        <p>Fill in the form and we'll get back to you as soon as possible.</p>
+
+        <!-- Enquiry type -->
+        <div class="enquiry-toggle" id="enquiryToggle">
+          <button class="eq-btn selected" data-val="general">General enquiry</button>
+          <button class="eq-btn" data-val="renter">I'm looking to rent</button>
+          <button class="eq-btn" data-val="owner">I'm a property owner</button>
+        </div>
+
+        <form id="contactForm" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First name</label>
+              <input type="text" id="firstName" placeholder="Marco" autocomplete="given-name">
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last name</label>
+              <input type="text" id="lastName" placeholder="Rossi" autocomplete="family-name">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" id="email" placeholder="marco@example.com" autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone / WhatsApp <span style="font-weight:300;text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</span></label>
+            <input type="tel" id="phone" placeholder="+39 333 000 0000" autocomplete="tel">
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" placeholder="Tell us how we can help…"></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit" id="submitBtn">Send message</button>
+        </form>
+
+        <p class="privacy-note">We'll only use your details to respond to your enquiry. No spam, ever.</p>
+      </div>
+
+      <!-- Success -->
+      <div class="success-screen" id="successScreen">
+        <div class="success-circle">✅</div>
+        <h3>Message received!</h3>
+        <p>Thanks for reaching out. We'll get back to you within 24 hours — usually much sooner.</p>
+        <div class="success-links">
+          <a href="website.html" class="link-primary">Back to homepage</a>
+          <a href="rentals.html" class="link-outline">Browse properties</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Enquiry type toggle
+  const eqBtns = document.querySelectorAll('.eq-btn');
+  eqBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      eqBtns.forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    });
+  });
+
+  // Pre-select enquiry type from URL param: contact.html?type=owner
+  const params = new URLSearchParams(window.location.search);
+  const typeParam = params.get('type');
+  if (typeParam) {
+    eqBtns.forEach(b => {
+      b.classList.remove('selected');
+      if (b.dataset.val === typeParam) b.classList.add('selected');
+    });
+  }
+
+  // Form submit
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const firstName = document.getElementById('firstName');
+    const email     = document.getElementById('email');
+    const message   = document.getElementById('message');
+    let valid = true;
+
+    [firstName, email, message].forEach(el => {
+      el.classList.remove('error');
+      if (!el.value.trim()) { el.classList.add('error'); valid = false; }
+    });
+    if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+      email.classList.add('error'); valid = false;
+    }
+    if (!valid) return;
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Sending…';
+
+    setTimeout(() => {
+      document.getElementById('formWrap').style.display = 'none';
+      document.getElementById('successScreen').classList.add('show');
+    }, 1200);
+  });
+</script>
+</body>
+</html>

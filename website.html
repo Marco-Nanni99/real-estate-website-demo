@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pastore Real Estate — Rentals & Property Care in Forte dei Marmi</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sand: #F5F0E8;
+    --deep: #1A2B3C;
+    --sea: #2D6A8F;
+    --sea-light: #4A8FB5;
+    --foam: #E8F4F8;
+    --gold: #C9A96E;
+    --text: #2A2A2A;
+    --muted: #8A8A8A;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--sand);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 4rem;
+    background: rgba(245,240,232,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(201,169,110,0.2);
+    animation: fadeDown 0.8s ease both;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--deep);
+    letter-spacing: 0.01em;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links {
+    display: flex; gap: 2.5rem; list-style: none;
+  }
+  .nav-links a {
+    text-decoration: none; color: var(--deep);
+    font-size: 0.875rem; font-weight: 400; letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--sea); }
+  .nav-cta {
+    background: var(--deep); color: white !important;
+    padding: 0.55rem 1.4rem; border-radius: 100px;
+    font-size: 0.85rem !important;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--sea) !important; color: white !important; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    position: relative; overflow: hidden;
+  }
+
+  .hero-left {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 8rem 4rem 5rem 5rem;
+    position: relative; z-index: 2;
+    animation: fadeUp 1s 0.2s ease both;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.75rem; font-weight: 500;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1.5rem;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 4.5vw, 4.2rem);
+    line-height: 1.1;
+    color: var(--deep);
+    margin-bottom: 1.75rem;
+  }
+  h1 em {
+    font-style: italic; color: var(--sea);
+  }
+
+  .hero-desc {
+    font-size: 1.05rem; line-height: 1.7;
+    color: #555; max-width: 440px;
+    margin-bottom: 3rem; font-weight: 300;
+  }
+
+  /* ── DUAL CTA CARDS ── */
+  .cta-cards {
+    display: flex; gap: 1rem;
+  }
+
+  .cta-card {
+    flex: 1; border-radius: 16px; padding: 1.5rem 1.75rem;
+    cursor: pointer; transition: transform 0.25s, box-shadow 0.25s;
+    text-decoration: none; display: block;
+    position: relative; overflow: hidden;
+  }
+  .cta-card::before {
+    content: ''; position: absolute; inset: 0;
+    opacity: 0; transition: opacity 0.25s;
+  }
+  .cta-card:hover { transform: translateY(-4px); }
+  .cta-card:hover::before { opacity: 1; }
+
+  .cta-card--renter {
+    background: var(--deep);
+    box-shadow: 0 8px 32px rgba(26,43,60,0.25);
+  }
+  .cta-card--renter:hover {
+    box-shadow: 0 16px 48px rgba(26,43,60,0.35);
+  }
+  .cta-card--owner {
+    background: white;
+    border: 1.5px solid rgba(201,169,110,0.4);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+  }
+  .cta-card--owner:hover {
+    box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+    border-color: var(--gold);
+  }
+
+  .cta-icon {
+    font-size: 1.6rem; margin-bottom: 0.75rem; display: block;
+  }
+  .cta-label {
+    font-size: 0.7rem; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem; margin-bottom: 0.5rem;
+  }
+  .cta-desc { font-size: 0.8rem; line-height: 1.5; font-weight: 300; }
+  .cta-arrow {
+    display: inline-block; margin-top: 1rem;
+    font-size: 0.8rem; font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .cta-card--renter .cta-label,
+  .cta-card--renter .cta-title,
+  .cta-card--renter .cta-desc,
+  .cta-card--renter .cta-arrow { color: white; }
+  .cta-card--renter .cta-label { color: rgba(255,255,255,0.6); }
+
+  .cta-card--owner .cta-label { color: var(--gold); }
+  .cta-card--owner .cta-title,
+  .cta-card--owner .cta-desc { color: var(--deep); }
+  .cta-card--owner .cta-arrow { color: var(--sea); }
+
+  /* ── HERO RIGHT (IMAGE COLLAGE) ── */
+  .hero-right {
+    position: relative;
+    animation: fadeIn 1.2s 0.4s ease both;
+  }
+
+  .hero-img-main {
+    position: absolute;
+    top: 8rem; right: 4rem;
+    width: 62%; height: 55%;
+    border-radius: 20px;
+    background: linear-gradient(145deg, #4A8FB5 0%, #2D6A8F 50%, #1A2B3C 100%);
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(26,43,60,0.3);
+  }
+
+  .hero-img-secondary {
+    position: absolute;
+    bottom: 10rem; right: 14rem;
+    width: 42%; height: 40%;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #C9A96E 0%, #8B6940 100%);
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+    border: 4px solid var(--sand);
+  }
+
+  .hero-img-tag {
+    position: absolute;
+    bottom: 8rem; right: 3rem;
+    background: white; border-radius: 12px;
+    padding: 0.75rem 1.1rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .hero-img-tag .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #4CAF50;
+  }
+  .hero-img-tag span {
+    font-size: 0.8rem; font-weight: 500; color: var(--deep);
+  }
+
+  /* SVG placeholder images */
+  .img-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── WAVE DIVIDER ── */
+  .wave { line-height: 0; }
+  .wave svg { display: block; width: 100%; }
+
+  /* ── LISTINGS PREVIEW ── */
+  .section {
+    padding: 6rem 5rem;
+  }
+  .section-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 3rem;
+  }
+  .section-eyebrow {
+    font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 0.6rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    color: var(--deep); line-height: 1.2;
+  }
+  .section-title em { font-style: italic; color: var(--sea); }
+  .view-all {
+    text-decoration: none; color: var(--sea);
+    font-size: 0.875rem; font-weight: 500;
+    display: flex; align-items: center; gap: 0.4rem;
+    white-space: nowrap;
+    transition: gap 0.2s;
+  }
+  .view-all:hover { gap: 0.8rem; }
+
+  /* ── SEARCH BAR ── */
+  .search-bar {
+    background: white; border-radius: 100px;
+    padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 3rem;
+    width: 100%; max-width: 660px;
+  }
+  .search-bar input {
+    border: none; outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; color: var(--text);
+    flex: 1; background: transparent;
+  }
+  .search-bar select {
+    border: none; outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; color: var(--muted);
+    background: transparent; cursor: pointer;
+    padding: 0 0.5rem;
+    border-left: 1px solid #eee;
+  }
+  .search-btn {
+    background: var(--deep); color: white;
+    border: none; border-radius: 100px;
+    padding: 0.7rem 1.6rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem; font-weight: 500;
+    cursor: pointer; transition: background 0.2s;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .search-btn:hover { background: var(--sea); }
+
+  /* ── PROPERTY CARDS ── */
+  .cards-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+  }
+
+  .property-card {
+    background: white; border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    transition: transform 0.25s, box-shadow 0.25s;
+    cursor: pointer;
+  }
+  .property-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.13);
+  }
+
+  .card-img {
+    height: 200px; position: relative; overflow: hidden;
+  }
+  .card-img svg { width: 100%; height: 100%; }
+
+  .card-badge {
+    position: absolute; top: 1rem; left: 1rem;
+    background: white; border-radius: 100px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.72rem; font-weight: 500;
+    color: var(--deep); letter-spacing: 0.04em;
+  }
+  .card-fav {
+    position: absolute; top: 0.9rem; right: 1rem;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: white; display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; cursor: pointer; transition: transform 0.15s;
+  }
+  .card-fav:hover { transform: scale(1.15); }
+
+  .card-body { padding: 1.25rem 1.4rem 1.5rem; }
+  .card-location {
+    font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 0.35rem;
+  }
+  .card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; color: var(--deep);
+    margin-bottom: 0.5rem; line-height: 1.3;
+  }
+  .card-tags {
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+  .card-tag {
+    background: var(--foam); color: var(--sea);
+    padding: 0.2rem 0.65rem; border-radius: 100px;
+    font-size: 0.72rem; font-weight: 500;
+  }
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid #F0EDE8;
+  }
+  .card-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem; color: var(--deep);
+  }
+  .card-price span {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem; font-weight: 300; color: var(--muted);
+  }
+  .card-rating {
+    display: flex; align-items: center; gap: 0.3rem;
+    font-size: 0.82rem; color: var(--deep); font-weight: 500;
+  }
+  .card-rating .star { color: var(--gold); }
+
+  /* ── OWNER SECTION ── */
+  .owner-section {
+    background: var(--deep);
+    padding: 7rem 5rem;
+    position: relative; overflow: hidden;
+  }
+  .owner-section::before {
+    content: '';
+    position: absolute; top: -100px; right: -100px;
+    width: 500px; height: 500px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(45,106,143,0.3) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .owner-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6rem;
+    align-items: center;
+  }
+
+  .owner-content .section-eyebrow { color: var(--gold); }
+  .owner-content .section-title { color: white; }
+  .owner-content .section-title em { color: var(--sea-light); }
+
+  .owner-desc {
+    color: rgba(255,255,255,0.65); font-size: 1rem;
+    line-height: 1.75; margin: 1.5rem 0 2.5rem;
+    font-weight: 300;
+  }
+
+  .services-list {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem;
+    margin-bottom: 2.5rem;
+  }
+  .service-item {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 1rem 1.1rem; border-radius: 12px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: background 0.2s;
+  }
+  .service-item:hover { background: rgba(255,255,255,0.1); }
+  .service-icon { font-size: 1.3rem; flex-shrink: 0; }
+  .service-text { font-size: 0.82rem; color: rgba(255,255,255,0.8); line-height: 1.4; }
+  .service-text strong { display: block; color: white; margin-bottom: 0.15rem; font-weight: 500; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--gold); color: var(--deep);
+    padding: 0.875rem 2rem; border-radius: 100px;
+    font-size: 0.9rem; font-weight: 500;
+    text-decoration: none; transition: all 0.2s;
+    border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-primary:hover {
+    background: white;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+  }
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: transparent; color: white;
+    padding: 0.875rem 2rem; border-radius: 100px;
+    font-size: 0.9rem; font-weight: 400;
+    text-decoration: none; transition: all 0.2s;
+    border: 1px solid rgba(255,255,255,0.3);
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    margin-left: 1rem;
+  }
+  .btn-outline:hover { border-color: white; background: rgba(255,255,255,0.08); }
+
+  /* Owner stats panel */
+  .owner-panel {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 2.5rem;
+    backdrop-filter: blur(8px);
+  }
+  .panel-title {
+    font-family: 'Playfair Display', serif;
+    color: white; font-size: 1.25rem; margin-bottom: 2rem;
+  }
+  .stat-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-label {
+    font-size: 0.82rem; color: rgba(255,255,255,0.55);
+  }
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; color: white;
+  }
+  .stat-change {
+    font-size: 0.75rem; color: #7ECE9A; font-weight: 500;
+    background: rgba(126,206,154,0.15);
+    padding: 0.2rem 0.5rem; border-radius: 100px;
+  }
+
+  .panel-chart {
+    margin-top: 1.5rem; height: 80px;
+    display: flex; align-items: flex-end; gap: 6px;
+  }
+  .bar {
+    flex: 1; border-radius: 6px 6px 0 0;
+    background: rgba(74,143,181,0.4);
+    transition: background 0.2s;
+    cursor: pointer;
+  }
+  .bar:hover { background: var(--sea-light); }
+  .bar.active { background: var(--gold); }
+  .chart-labels {
+    display: flex; gap: 6px; margin-top: 0.5rem;
+  }
+  .chart-label {
+    flex: 1; text-align: center; font-size: 0.65rem;
+    color: rgba(255,255,255,0.3);
+  }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials {
+    padding: 6rem 5rem;
+    background: var(--foam);
+  }
+  .testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 3rem; }
+  .testi-card {
+    background: white; border-radius: 18px; padding: 1.75rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  }
+  .testi-stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 1rem; letter-spacing: 0.1em; }
+  .testi-quote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic; font-size: 1rem;
+    line-height: 1.6; color: var(--deep);
+    margin-bottom: 1.25rem;
+  }
+  .testi-author { display: flex; align-items: center; gap: 0.75rem; }
+  .testi-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    overflow: hidden; flex-shrink: 0;
+  }
+  .testi-name { font-size: 0.85rem; font-weight: 500; color: var(--deep); }
+  .testi-meta { font-size: 0.75rem; color: var(--muted); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--deep); padding: 4rem 5rem 2.5rem;
+    color: rgba(255,255,255,0.6);
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem;
+    margin-bottom: 3rem;
+  }
+  .footer-brand .nav-logo { font-size: 1.5rem; margin-bottom: 1rem; display: block; }
+  .footer-brand p { font-size: 0.85rem; line-height: 1.7; font-weight: 300; max-width: 280px; }
+  .footer-col h4 {
+    font-family: 'DM Sans', sans-serif; font-size: 0.72rem;
+    font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase;
+    color: white; margin-bottom: 1.25rem;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 0.6rem; }
+  .footer-col a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+  .footer-col a:hover { color: white; }
+  .footer-bottom {
+    padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 0.78rem;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1; transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">Pastore<span> Real Estate</span></span>
+  <ul class="nav-links">
+    <li><a href="rentals.html">Rentals</a></li>
+    <li><a href="owners.html">For Owners</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html" class="nav-cta">Get in Touch</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">Forte dei Marmi · Tuscany</p>
+    <h1>Your home on the <em>Versilian coast</em>, fully cared for</h1>
+    <p class="hero-desc">We manage and rent well-loved second homes in one of Tuscany's most beautiful seaside towns — so owners rest easy, and guests discover something genuinely local.</p>
+
+    <div class="cta-cards">
+      <a href="rentals.html" class="cta-card cta-card--renter">
+        <span class="cta-icon">🌊</span>
+        <div class="cta-label">I'm a renter</div>
+        <div class="cta-title">Find a villa or apartment</div>
+        <p class="cta-desc">Browse handpicked properties with transparent pricing and real photos.</p>
+        <span class="cta-arrow">Browse homes →</span>
+      </a>
+      <a href="owners.html" class="cta-card cta-card--owner">
+        <span class="cta-icon">🏡</span>
+        <div class="cta-label">I'm an owner</div>
+        <div class="cta-title">Rent out & care for my home</div>
+        <p class="cta-desc">We handle everything year-round — maintenance, guests, and peace of mind.</p>
+        <span class="cta-arrow">Learn more →</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Visual collage -->
+  <div class="hero-right">
+    <div class="hero-img-main">
+      <svg viewBox="0 0 420 280" xmlns="http://www.w3.org/2000/svg">
+        <!-- Sky -->
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#87CEEB"/>
+            <stop offset="100%" stop-color="#B8D9EF"/>
+          </linearGradient>
+          <linearGradient id="sea-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2D6A8F"/>
+            <stop offset="100%" stop-color="#1A4060"/>
+          </linearGradient>
+          <linearGradient id="villa-wall" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#F5E6C8"/>
+            <stop offset="100%" stop-color="#E8D5A8"/>
+          </linearGradient>
+        </defs>
+        <rect width="420" height="280" fill="url(#sky)"/>
+        <!-- Mountains/hills -->
+        <path d="M0 160 Q60 100 120 140 Q180 80 240 130 Q300 70 360 120 L420 130 L420 280 L0 280Z" fill="#B8D4C8" opacity="0.5"/>
+        <!-- Sea -->
+        <rect y="195" width="420" height="85" fill="url(#sea-grad)"/>
+        <!-- Sea shimmer -->
+        <path d="M0 205 Q105 200 210 208 Q315 215 420 205 L420 213 Q315 220 210 215 Q105 208 0 213Z" fill="white" opacity="0.12"/>
+        <!-- Villa building -->
+        <rect x="120" y="110" width="180" height="90" fill="url(#villa-wall)" rx="2"/>
+        <!-- Roof -->
+        <polygon points="110,112 210,60 310,112" fill="#C0764A"/>
+        <!-- Windows -->
+        <rect x="140" y="130" width="30" height="35" fill="#7AABCC" rx="2"/>
+        <rect x="195" y="130" width="30" height="35" fill="#7AABCC" rx="2"/>
+        <rect x="250" y="130" width="30" height="35" fill="#7AABCC" rx="2"/>
+        <!-- Door -->
+        <rect x="185" y="160" width="40" height="40" fill="#A0632E" rx="3"/>
+        <circle cx="221" cy="182" r="3" fill="#C9A96E"/>
+        <!-- Shutters -->
+        <rect x="133" y="128" width="10" height="38" fill="#6B9A4A" rx="1"/>
+        <rect x="177" y="128" width="10" height="38" fill="#6B9A4A" rx="1"/>
+        <rect x="188" y="128" width="10" height="38" fill="#6B9A4A" rx="1"/>
+        <rect x="232" y="128" width="10" height="38" fill="#6B9A4A" rx="1"/>
+        <rect x="243" y="128" width="10" height="38" fill="#6B9A4A" rx="1"/>
+        <rect x="287" y="128" width="10" height="38" fill="#6B9A4A" rx="1"/>
+        <!-- Trees -->
+        <rect x="85" y="155" width="8" height="45" fill="#8B6340"/>
+        <ellipse cx="89" cy="148" rx="22" ry="35" fill="#4A7A3A"/>
+        <rect x="315" y="158" width="8" height="42" fill="#8B6340"/>
+        <ellipse cx="319" cy="150" rx="20" ry="32" fill="#5A8A4A"/>
+        <!-- Pool -->
+        <ellipse cx="210" cy="225" rx="55" ry="14" fill="#4A9EBF" opacity="0.8"/>
+        <ellipse cx="210" cy="222" rx="53" ry="12" fill="#5AAECF" opacity="0.6"/>
+        <!-- Sun glare -->
+        <circle cx="370" cy="40" r="28" fill="#FFE066" opacity="0.7"/>
+        <circle cx="370" cy="40" r="20" fill="#FFD700" opacity="0.9"/>
+      </svg>
+    </div>
+
+    <div class="hero-img-secondary">
+      <svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="beach" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#87CEEB"/>
+            <stop offset="60%" stop-color="#4A9EBF"/>
+            <stop offset="100%" stop-color="#F5DEB3"/>
+          </linearGradient>
+        </defs>
+        <rect width="260" height="200" fill="url(#beach)"/>
+        <!-- Sand -->
+        <path d="M0 150 Q65 140 130 148 Q195 155 260 145 L260 200 L0 200Z" fill="#DEB887"/>
+        <!-- Water -->
+        <path d="M0 120 Q65 110 130 118 Q195 125 260 115 L260 160 Q195 165 130 158 Q65 150 0 160Z" fill="#2D9EBF" opacity="0.7"/>
+        <!-- Waves -->
+        <path d="M20 128 Q55 122 90 128 Q125 133 160 127 Q195 122 235 129" fill="none" stroke="white" stroke-width="2" opacity="0.5"/>
+        <!-- Beach umbrella -->
+        <line x1="130" y1="155" x2="130" y2="120" stroke="#8B4513" stroke-width="3"/>
+        <path d="M100 120 Q130 95 160 120" fill="#E74C3C" opacity="0.9"/>
+        <path d="M105 120 Q118 112 130 120" fill="#C0392B" opacity="0.9"/>
+        <!-- Sun chairs -->
+        <rect x="105" y="148" width="25" height="8" rx="2" fill="#DEB887" stroke="#C9A96E" stroke-width="1"/>
+        <rect x="140" y="148" width="25" height="8" rx="2" fill="#DEB887" stroke="#C9A96E" stroke-width="1"/>
+        <!-- Sailboat -->
+        <polygon points="40,100 40,70 65,85" fill="white" opacity="0.9"/>
+        <line x1="40" y1="65" x2="40" y2="105" stroke="#5A3020" stroke-width="2"/>
+        <rect x="20" y="101" width="42" height="8" rx="4" fill="#5A3020"/>
+      </svg>
+    </div>
+
+    <div class="hero-img-tag">
+      <div class="dot"></div>
+      <span>12 properties available this summer</span>
+    </div>
+  </div>
+</section>
+
+<!-- LISTINGS SECTION -->
+<section class="section reveal">
+  <div class="section-header">
+    <div>
+      <p class="section-eyebrow">Summer 2025</p>
+      <h2 class="section-title">Handpicked homes for <em>your stay</em></h2>
+    </div>
+    <a href="#" class="view-all">View all properties →</a>
+  </div>
+
+  <div class="search-bar">
+    <span style="color:var(--muted);font-size:1rem;">🔍</span>
+    <input type="text" placeholder="Search by name, neighbourhood…">
+    <select>
+      <option>Any size</option>
+      <option>Studio / 1 bed</option>
+      <option>2 bedrooms</option>
+      <option>3 bedrooms</option>
+    </select>
+    <select>
+      <option>Any price</option>
+      <option>Under €1,500/wk</option>
+      <option>€1,500–€3,000</option>
+      <option>€3,000+</option>
+    </select>
+    <button class="search-btn">Search</button>
+  </div>
+
+  <div class="cards-grid">
+    <!-- Card 1 -->
+    <div class="property-card">
+      <div class="card-img">
+        <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#D4E8F0"/>
+              <stop offset="100%" stop-color="#A8C8DF"/>
+            </linearGradient>
+          </defs>
+          <rect width="360" height="200" fill="url(#g1)"/>
+          <rect x="60" y="80" width="240" height="90" fill="#F5E6C8" rx="2"/>
+          <polygon points="50,82 180,30 310,82" fill="#C47050"/>
+          <rect x="90" y="100" width="28" height="32" fill="#7AABCC" rx="1"/>
+          <rect x="166" y="100" width="28" height="32" fill="#7AABCC" rx="1"/>
+          <rect x="242" y="100" width="28" height="32" fill="#7AABCC" rx="1"/>
+          <rect x="155" y="135" width="50" height="35" fill="#9B6B3A" rx="2"/>
+          <ellipse cx="50" cy="160" rx="40" ry="50" fill="#5A8A4A"/>
+          <ellipse cx="310" cy="155" rx="35" ry="45" fill="#4A7A3A"/>
+          <rect y="180" width="360" height="20" fill="#C8B89A"/>
+          <rect x="100" y="155" width="160" height="8" rx="2" fill="#5AAECF" opacity="0.7"/>
+        </svg>
+        <span class="card-badge">Villa · 3 beds</span>
+        <div class="card-fav">♡</div>
+      </div>
+      <div class="card-body">
+        <p class="card-location">Centro · 600m from beach</p>
+        <h3 class="card-name">Villa delle Mimose</h3>
+        <div class="card-tags">
+          <span class="card-tag">🏊 Pool</span>
+          <span class="card-tag">🌿 Garden</span>
+          <span class="card-tag">🅿️ Parking</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-price">€2,400 <span>/ week</span></div>
+          <div class="card-rating"><span class="star">★</span> 4.9 <span style="color:var(--muted);font-weight:300">(18)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="property-card">
+      <div class="card-img">
+        <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="360" height="200" fill="#E8D5B8"/>
+          <rect y="150" width="360" height="50" fill="#B8D0D8"/>
+          <rect x="80" y="50" width="200" height="110" fill="#EADCC0" rx="2"/>
+          <rect x="80" y="50" width="200" height="25" fill="#D4956A"/>
+          <rect x="100" y="80" width="40" height="50" fill="#8ABCCF" rx="1" opacity="0.8"/>
+          <rect x="160" y="80" width="40" height="50" fill="#8ABCCF" rx="1" opacity="0.8"/>
+          <rect x="220" y="80" width="40" height="50" fill="#8ABCCF" rx="1" opacity="0.8"/>
+          <rect x="155" y="130" width="50" height="30" fill="#A07040" rx="2"/>
+          <!-- Balcony -->
+          <rect x="80" y="72" width="200" height="5" fill="#C0956A"/>
+          <line x1="95" y1="52" x2="95" y2="72" stroke="#B08060" stroke-width="2"/>
+          <line x1="125" y1="52" x2="125" y2="72" stroke="#B08060" stroke-width="2"/>
+          <line x1="155" y1="52" x2="155" y2="72" stroke="#B08060" stroke-width="2"/>
+          <line x1="185" y1="52" x2="185" y2="72" stroke="#B08060" stroke-width="2"/>
+          <line x1="215" y1="52" x2="215" y2="72" stroke="#B08060" stroke-width="2"/>
+          <line x1="245" y1="52" x2="245" y2="72" stroke="#B08060" stroke-width="2"/>
+          <line x1="270" y1="52" x2="270" y2="72" stroke="#B08060" stroke-width="2"/>
+          <!-- Pine trees -->
+          <polygon points="20,60 40,130 0,130" fill="#3A6A2A"/>
+          <polygon points="335,55 358,130 312,130" fill="#4A7A3A"/>
+        </svg>
+        <span class="card-badge">Apartment · 2 beds</span>
+        <div class="card-fav">♡</div>
+      </div>
+      <div class="card-body">
+        <p class="card-location">Vittoria · 150m from beach</p>
+        <h3 class="card-name">Appartamento Azzurro</h3>
+        <div class="card-tags">
+          <span class="card-tag">🌊 Sea view</span>
+          <span class="card-tag">🏖️ Beach access</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-price">€1,600 <span>/ week</span></div>
+          <div class="card-rating"><span class="star">★</span> 4.7 <span style="color:var(--muted);font-weight:300">(11)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="property-card">
+      <div class="card-img">
+        <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="g3" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#C8E0C0"/>
+              <stop offset="100%" stop-color="#A0C890"/>
+            </linearGradient>
+          </defs>
+          <rect width="360" height="200" fill="url(#g3)"/>
+          <rect y="170" width="360" height="30" fill="#8AB890"/>
+          <!-- Modern villa -->
+          <rect x="70" y="70" width="220" height="100" fill="#F8F2E8" rx="3"/>
+          <rect x="70" y="70" width="220" height="18" fill="#E0D0B0"/>
+          <rect x="70" y="105" width="220" height="4" fill="#D0C0A0"/>
+          <!-- Large windows -->
+          <rect x="85" y="82" width="60" height="55" fill="#90C0D8" rx="1" opacity="0.85"/>
+          <rect x="150" y="82" width="60" height="55" fill="#90C0D8" rx="1" opacity="0.85"/>
+          <rect x="215" y="82" width="60" height="55" fill="#90C0D8" rx="1" opacity="0.85"/>
+          <!-- Modern door -->
+          <rect x="155" y="140" width="50" height="30" fill="#4A6A4A" rx="1"/>
+          <!-- Pool in garden -->
+          <ellipse cx="180" cy="185" rx="70" ry="10" fill="#5AAECF" opacity="0.8"/>
+          <!-- Trees -->
+          <rect x="30" y="100" width="6" height="70" fill="#6B4A20"/>
+          <ellipse cx="33" cy="90" rx="18" ry="28" fill="#4A8A3A"/>
+          <rect x="320" y="110" width="6" height="60" fill="#6B4A20"/>
+          <ellipse cx="323" cy="98" rx="16" ry="26" fill="#5A9A4A"/>
+        </svg>
+        <span class="card-badge">Villa · 2 beds</span>
+        <div class="card-fav">❤️</div>
+      </div>
+      <div class="card-body">
+        <p class="card-location">Spiaggia di Levante · 400m</p>
+        <h3 class="card-name">Casa Ulivo Bianco</h3>
+        <div class="card-tags">
+          <span class="card-tag">🏊 Pool</span>
+          <span class="card-tag">🌿 Garden</span>
+          <span class="card-tag">🐾 Pets ok</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-price">€1,950 <span>/ week</span></div>
+          <div class="card-rating"><span class="star">★</span> 5.0 <span style="color:var(--muted);font-weight:300">(7)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OWNER SECTION -->
+<section class="owner-section reveal">
+  <div class="owner-grid">
+    <div class="owner-content">
+      <p class="section-eyebrow">For property owners</p>
+      <h2 class="section-title">We take care of your home — <em>all year round</em></h2>
+      <p class="owner-desc">Most agencies only show up in July and August. We're here 365 days a year — tending your garden, managing repairs, greeting guests, and making sure you generate real income from your property while it remains in perfect condition.</p>
+
+      <div class="services-list">
+        <div class="service-item">
+          <span class="service-icon">🌿</span>
+          <div class="service-text"><strong>Gardening</strong>Regular maintenance, irrigation, seasonal planting</div>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">🔧</span>
+          <div class="service-text"><strong>Hydraulics & Plumbing</strong>Inspections and emergency repairs</div>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">✨</span>
+          <div class="service-text"><strong>Cleaning & Turnover</strong>Professional between-guest cleaning</div>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">🏡</span>
+          <div class="service-text"><strong>Rental Management</strong>Listings, inquiries, bookings handled</div>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">📋</span>
+          <div class="service-text"><strong>Seasonal Inspection</strong>Pre- and post-season walkthroughs</div>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">🚨</span>
+          <div class="service-text"><strong>Emergency Response</strong>We're always nearby when needed</div>
+        </div>
+      </div>
+
+      <a href="register.html" class="btn-primary">List my property</a>
+      <a href="services.html" class="btn-outline">Learn about services</a>
+    </div>
+
+    <div class="owner-panel">
+      <h3 class="panel-title">Your property dashboard</h3>
+
+      <div class="stat-row">
+        <span class="stat-label">Rental income (2024)</span>
+        <div style="display:flex;align-items:center;gap:0.75rem">
+          <span class="stat-value">€14,200</span>
+          <span class="stat-change">+18%</span>
+        </div>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Occupancy rate</span>
+        <div style="display:flex;align-items:center;gap:0.75rem">
+          <span class="stat-value">73%</span>
+          <span class="stat-change">+5%</span>
+        </div>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Next booking</span>
+        <span class="stat-value" style="font-size:1rem">June 28 – July 12</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Open maintenance tasks</span>
+        <span class="stat-value" style="font-size:1rem;color:#7ECE9A">All clear ✓</span>
+      </div>
+
+      <div class="panel-chart">
+        <div class="bar" style="height:25%"></div>
+        <div class="bar" style="height:15%"></div>
+        <div class="bar" style="height:20%"></div>
+        <div class="bar" style="height:18%"></div>
+        <div class="bar" style="height:45%"></div>
+        <div class="bar active" style="height:90%"></div>
+        <div class="bar active" style="height:100%"></div>
+        <div class="bar" style="height:95%"></div>
+        <div class="bar" style="height:70%"></div>
+        <div class="bar" style="height:20%"></div>
+        <div class="bar" style="height:10%"></div>
+        <div class="bar" style="height:8%"></div>
+      </div>
+      <div class="chart-labels">
+        <div class="chart-label">J</div><div class="chart-label">F</div>
+        <div class="chart-label">M</div><div class="chart-label">A</div>
+        <div class="chart-label">M</div>
+        <div class="chart-label" style="color:var(--gold)">J</div>
+        <div class="chart-label" style="color:var(--gold)">J</div>
+        <div class="chart-label" style="color:var(--gold)">A</div>
+        <div class="chart-label">S</div><div class="chart-label">O</div>
+        <div class="chart-label">N</div><div class="chart-label">D</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials reveal">
+  <div class="section-header">
+    <div>
+      <p class="section-eyebrow">From our guests & owners</p>
+      <h2 class="section-title">Trusted by families <em>returning every year</em></h2>
+    </div>
+  </div>
+
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"After years of struggling to find something not too big, not too expensive — this was exactly what we were looking for. A real gem of a cottage, well maintained, with a lovely garden."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">
+          <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="#B8D0D8"/><circle cx="20" cy="16" r="7" fill="#8AACBC"/><path d="M4 36 Q20 26 36 36" fill="#8AACBC"/></svg>
+        </div>
+        <div>
+          <div class="testi-name">Sophie M.</div>
+          <div class="testi-meta">Renter · Paris, France</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"We've owned our house in Forte for 15 years. This is the first team that actually feels like neighbours — they called us immediately when a shutter broke in the storm. That's what we needed."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">
+          <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="#D4C8B0"/><circle cx="20" cy="16" r="7" fill="#B09070"/><path d="M4 36 Q20 26 36 36" fill="#B09070"/></svg>
+        </div>
+        <div>
+          <div class="testi-name">Marco & Elena B.</div>
+          <div class="testi-meta">Owners · Milano, Italy</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Completely honest with pricing, no hidden fees, great photos that matched reality. They even left us a welcome basket with local products. We'll be back every August."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">
+          <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="#C8D8C0"/><circle cx="20" cy="16" r="7" fill="#8AAA88"/><path d="M4 36 Q20 26 36 36" fill="#8AAA88"/></svg>
+        </div>
+        <div>
+          <div class="testi-name">Klaus & Ute H.</div>
+          <div class="testi-meta">Renter · Munich, Germany</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="nav-logo">Pastore<span> Real Estate</span></span>
+      <p>The full-service local manager for second homes in Forte dei Marmi. We care for your property all year, and rent it out beautifully in summer.</p>
+    </div>
+    <div class="footer-col">
+      <h4>For Renters</h4>
+      <ul>
+        <li><a href="rentals.html">Browse all properties</a></li>
+        <li><a href="rentals.html?amenity=Pool">Villas with pools</a></li>
+        <li><a href="rentals.html?amenity=Sea+view">Sea view apartments</a></li>
+        <li><a href="rentals.html?amenity=Pets+ok">Pet-friendly homes</a></li>
+        <li><a href="rentals.html">How booking works</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>For Owners</h4>
+      <ul>
+        <li><a href="register.html">List your property</a></li>
+        <li><a href="owners.html">Year-round care</a></li>
+        <li><a href="owners.html">Rental management</a></li>
+        <li><a href="owners.html">Owner dashboard</a></li>
+        <li><a href="owners.html">Pricing</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="#">info@casaforte.it</a></li>
+        <li><a href="#">+39 0584 000 000</a></li>
+        <li><a href="#">Forte dei Marmi, LU</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">WhatsApp us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Pastore Real Estate. All rights reserved.</span>
+    <span>Privacy Policy · Terms of Use · Cookie Settings</span>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Favourite toggle
+  document.querySelectorAll('.card-fav').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      btn.textContent = btn.textContent === '♡' ? '❤️' : '♡';
+    });
+  });
+</script>
+
+</body>
+</html>

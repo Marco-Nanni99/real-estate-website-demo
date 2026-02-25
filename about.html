@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Pastore Real Estate</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sand: #F5F0E8;
+    --deep: #1A2B3C;
+    --sea: #2D6A8F;
+    --sea-light: #4A8FB5;
+    --foam: #E8F4F8;
+    --gold: #C9A96E;
+    --text: #2A2A2A;
+    --muted: #8A8A8A;
+    --nav-h: 68px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--sand);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 4rem;
+    background: rgba(245,240,232,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(201,169,110,0.2);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; color: var(--deep);
+    letter-spacing: 0.01em; text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--deep);
+    font-size: 0.875rem; font-weight: 400; letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--sea); }
+  .nav-links a.active { color: var(--sea); }
+  .nav-cta {
+    background: var(--deep); color: white !important;
+    padding: 0.55rem 1.4rem; border-radius: 100px;
+    font-size: 0.85rem !important; transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--sea) !important; }
+
+  /* ── PAGE HERO ── */
+  .page-hero {
+    padding-top: var(--nav-h);
+    background: var(--deep);
+    position: relative; overflow: hidden;
+  }
+  .page-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(45,106,143,0.3) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    position: relative; z-index: 1;
+    max-width: 1100px; margin: 0 auto;
+    padding: 5rem 4rem 5rem;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 5rem; align-items: center;
+  }
+  .eyebrow {
+    font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1.25rem; display: block;
+  }
+  .page-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 3.5vw, 3.4rem);
+    line-height: 1.12; color: #fff;
+    margin-bottom: 1.5rem;
+  }
+  .page-hero h1 em { font-style: italic; color: var(--gold); }
+  .page-hero .hero-lead {
+    font-size: 1.05rem; line-height: 1.8;
+    color: rgba(255,255,255,0.6); font-weight: 300;
+    max-width: 420px;
+  }
+
+  /* hero photo placeholder */
+  .hero-photo {
+    aspect-ratio: 4/3;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.75rem;
+    color: rgba(255,255,255,0.25);
+    font-size: 0.82rem; font-weight: 300;
+    letter-spacing: 0.04em;
+    position: relative; overflow: hidden;
+  }
+  .hero-photo-icon { font-size: 2.5rem; opacity: 0.4; }
+  .hero-photo-label { opacity: 0.5; }
+
+  /* ── STORY SECTION ── */
+  .story-section {
+    max-width: 780px; margin: 0 auto;
+    padding: 6rem 4rem;
+  }
+
+  /* opening paragraph — large */
+  .story-open {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    line-height: 1.65; color: var(--deep);
+    margin-bottom: 2.5rem;
+    font-style: italic;
+  }
+
+  /* body paragraphs */
+  .story-body p {
+    font-size: 1.05rem; line-height: 1.9;
+    color: #444; font-weight: 300;
+    margin-bottom: 1.75rem;
+  }
+  .story-body p:last-child { margin-bottom: 0; }
+
+  /* pull quote */
+  .pull-quote {
+    margin: 3.5rem 0;
+    padding: 2.5rem 3rem;
+    background: var(--deep);
+    border-radius: 18px;
+    border-left: 4px solid var(--gold);
+    position: relative;
+  }
+  .pull-quote p {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+    line-height: 1.55; color: #fff;
+    font-style: italic;
+    margin: 0;
+  }
+  .pull-quote p em { color: var(--gold); font-style: normal; }
+
+  /* ── TEAM PHOTO ── */
+  .photo-section {
+    background: var(--foam);
+    padding: 5rem 4rem;
+  }
+  .photo-section-inner {
+    max-width: 1000px; margin: 0 auto;
+  }
+  .photo-section-inner > .eyebrow { color: var(--sea); margin-bottom: 1rem; }
+  .photo-section-inner > h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+    color: var(--deep); margin-bottom: 2.5rem;
+    line-height: 1.2;
+  }
+  .team-photo-placeholder {
+    width: 100%;
+    aspect-ratio: 16/7;
+    background: #dde8ed;
+    border-radius: 20px;
+    border: 2px dashed rgba(45,106,143,0.25);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.75rem;
+    color: var(--sea); opacity: 0.6;
+  }
+  .team-photo-placeholder-icon { font-size: 3rem; }
+  .team-photo-placeholder p {
+    font-size: 0.9rem; font-weight: 400;
+    letter-spacing: 0.04em;
+  }
+  .photo-caption {
+    margin-top: 1.25rem;
+    font-size: 0.82rem; color: var(--muted);
+    text-align: center; font-style: italic;
+  }
+
+  /* ── VALUES ── */
+  .values-section {
+    padding: 6rem 4rem;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .values-header {
+    text-align: center; margin-bottom: 3.5rem;
+  }
+  .values-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+    color: var(--deep); line-height: 1.2;
+  }
+  .values-header h2 em { font-style: italic; color: var(--sea); }
+  .values-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .value-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 2.25rem 2rem;
+    border: 1.5px solid rgba(201,169,110,0.18);
+    transition: box-shadow 0.25s, transform 0.25s;
+  }
+  .value-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(26,43,60,0.09);
+  }
+  .value-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem; color: rgba(201,169,110,0.3);
+    line-height: 1; margin-bottom: 0.75rem;
+    font-style: italic;
+  }
+  .value-card h3 {
+    font-size: 1.05rem; font-weight: 500;
+    color: var(--deep); margin-bottom: 0.75rem;
+  }
+  .value-card p {
+    font-size: 0.875rem; line-height: 1.7;
+    color: var(--muted); font-weight: 300;
+  }
+
+  /* ── CLOSING CTA ── */
+  .closing-cta {
+    background: var(--deep);
+    padding: 5rem 4rem;
+    text-align: center;
+  }
+  .closing-cta h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+    color: #fff; margin-bottom: 0.75rem;
+    line-height: 1.25;
+  }
+  .closing-cta h2 em { font-style: italic; color: var(--gold); }
+  .closing-cta p {
+    font-size: 1rem; color: rgba(255,255,255,0.55);
+    font-weight: 300; margin-bottom: 2.5rem;
+  }
+  .closing-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-gold {
+    background: var(--gold); color: var(--deep);
+    padding: 0.85rem 2rem; border-radius: 100px;
+    font-size: 0.9rem; font-weight: 500;
+    text-decoration: none; transition: opacity 0.2s;
+  }
+  .btn-gold:hover { opacity: 0.88; }
+  .btn-ghost {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; padding: 0.85rem 2rem;
+    border-radius: 100px; font-size: 0.9rem;
+    text-decoration: none; transition: background 0.2s;
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.15); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--deep); color: rgba(255,255,255,0.6);
+    padding: 4rem 4rem 2.5rem;
+    font-size: 0.875rem;
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem; margin-bottom: 3rem;
+  }
+  .footer-brand .nav-logo { font-size: 1.3rem; color: #fff; display: inline-block; margin-bottom: 1rem; }
+  .footer-brand p { line-height: 1.7; font-weight: 300; max-width: 240px; }
+  .footer-col h4 {
+    font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: rgba(255,255,255,0.4); margin-bottom: 1.25rem;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 0.7rem; }
+  .footer-col a { text-decoration: none; color: rgba(255,255,255,0.6); transition: color 0.2s; }
+  .footer-col a:hover { color: var(--gold); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 2rem; }
+    .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; padding: 4rem 2rem; }
+    .hero-photo { display: none; }
+    .story-section { padding: 4rem 2rem; }
+    .pull-quote { padding: 1.75rem 1.75rem; }
+    .photo-section { padding: 3rem 2rem; }
+    .values-section { padding: 4rem 2rem; }
+    .values-grid { grid-template-columns: 1fr; }
+    .closing-cta { padding: 4rem 2rem; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <a href="website.html" class="nav-logo">Pastore<span> Real Estate</span></a>
+  <ul class="nav-links">
+    <li><a href="rentals.html">Rentals</a></li>
+    <li><a href="owners.html">For Owners</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+    <li><a href="contact.html" class="nav-cta">Get in Touch</a></li>
+  </ul>
+</nav>
+
+<!-- ══ HERO ══ -->
+<div class="page-hero">
+  <div class="hero-inner">
+    <div>
+      <span class="eyebrow">Our story</span>
+      <h1>Born from a<br><em>real problem.</em></h1>
+      <p class="hero-lead">This company wasn't built in a boardroom. It started with a grandmother, a second home, and a system that was failing her — quietly, expensively, and every single year.</p>
+    </div>
+    <div class="hero-photo">
+      <span class="hero-photo-icon">📷</span>
+      <span class="hero-photo-label">Team photo</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ STORY ══ -->
+<div class="story-section">
+
+  <p class="story-open">"My grandmother owned a second home. A beautiful place, but managing it was exhausting."</p>
+
+  <div class="story-body">
+    <p>Every small issue meant phone calls, driving back and forth, waiting for plumbers, coordinating painters, chasing gardeners. Each service worked in isolation. Costs were high, problems repeated, and there was never a single person truly responsible for the whole system. Trust was fragile. Efficiency was zero.</p>
+
+    <p>So I approached it the way an engineer would.</p>
+
+    <p>Instead of treating property management as occasional interventions, I built a structured, year-round operating model. One coordinated system. One accountable team. Preventive maintenance instead of emergency fixes. Transparent accounting. Verified professionals. Continuous oversight.</p>
+
+    <div class="pull-quote">
+      <p>The goal was simple: my grandmother should be able to stay at home, open her phone, and know that everything is handled — maintenance, guests, income, compliance — <em>without stress, without surprises.</em></p>
+    </div>
+
+    <p>That solution became our company.</p>
+
+    <p>We at Pastore Real Estate have grown steadily because owners value three things: reliability, control, and preservation of their asset. We protect properties as if they were our own. Gardens are maintained before they deteriorate. Repairs are managed before they become structural damage. Guests are welcomed professionally. Financial performance is monitored continuously, not seasonally.</p>
+
+    <p>A house is not just a listing. It is a long-term asset that requires consistent attention. When managed properly, it generates income while increasing in value. When managed poorly, it deteriorates quietly.</p>
+
+    <p>We chose to build a system that prevents the second outcome.</p>
+
+    <p>Today, many families trust us with their homes because they want peace of mind — not just during peak season, but every single day of the year.</p>
+
+    <p>And that remains our standard.</p>
+  </div>
+
+</div>
+
+<!-- ══ TEAM PHOTO ══ -->
+<div class="photo-section">
+  <div class="photo-section-inner">
+    <span class="eyebrow">The team</span>
+    <h2>The people behind the property.</h2>
+    <div class="team-photo-placeholder">
+      <span class="team-photo-placeholder-icon">📸</span>
+      <p>Team photo — coming soon</p>
+    </div>
+    <p class="photo-caption">Our team in Forte dei Marmi — available 7 days a week, all year round.</p>
+  </div>
+</div>
+
+<!-- ══ VALUES ══ -->
+<div class="values-section">
+  <div class="values-header">
+    <span class="eyebrow" style="color:var(--sea)">What we stand for</span>
+    <h2>For owners, <em>stability and transparency.</em><br>For guests, responsiveness and quality.</h2>
+  </div>
+
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-num">01</div>
+      <h3>Reliability</h3>
+      <p>Consistent, year-round oversight — not just when something breaks. Every property is monitored proactively, with scheduled maintenance that prevents issues before they become problems.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-num">02</div>
+      <h3>Control</h3>
+      <p>Owners have full visibility through their personal dashboard — revenue, occupancy, maintenance requests, upcoming bookings. No guessing, no waiting for end-of-season reports.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-num">03</div>
+      <h3>Preservation</h3>
+      <p>A property managed well gains value. We treat every home as a long-term asset, not a short-term listing. Structural care, quality refurbishments, and trusted professionals — every time.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CLOSING CTA ══ -->
+<div class="closing-cta">
+  <h2>Ready to hand over<br><em>the keys?</em></h2>
+  <p>Whether you're an owner looking for peace of mind, or a guest planning your next Tuscan stay — we'd love to hear from you.</p>
+  <div class="closing-btns">
+    <a href="register.html" class="btn-gold">List my property</a>
+    <a href="rentals.html" class="btn-ghost">Browse rentals</a>
+    <a href="contact.html" class="btn-ghost">Get in touch</a>
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="website.html" class="nav-logo">Pastore<span style="color:var(--gold)"> Real Estate</span></a>
+      <p>Boutique property management and holiday rentals on the Tuscan Riviera, Forte dei Marmi.</p>
+    </div>
+    <div class="footer-col">
+      <h4>For Renters</h4>
+      <ul>
+        <li><a href="rentals.html">Browse all properties</a></li>
+        <li><a href="rentals.html">Sea view apartments</a></li>
+        <li><a href="rentals.html">Villas with pools</a></li>
+        <li><a href="rentals.html">Pet-friendly homes</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>For Owners</h4>
+      <ul>
+        <li><a href="register.html">List your property</a></li>
+        <li><a href="services.html#owners">Year-round care</a></li>
+        <li><a href="owners.html">Owner dashboard</a></li>
+        <li><a href="services.html">Our services</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:info@pastore.it">info@pastore.it</a></li>
+        <li><a href="tel:+390584000000">+39 0584 000 000</a></li>
+        <li><a href="#">Forte dei Marmi, LU</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="contact.html">WhatsApp us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Pastore Real Estate. All rights reserved.</span>
+    <span style="color:rgba(255,255,255,0.3)">Forte dei Marmi, Tuscany</span>
+  </div>
+</footer>
+
+</body>
+</html>
